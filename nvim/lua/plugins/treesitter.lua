@@ -34,6 +34,7 @@ return {
           "toml",
           "tsx",
           "typescript",
+          "swift",
           "vim",
           "vimdoc",
           "xml",
