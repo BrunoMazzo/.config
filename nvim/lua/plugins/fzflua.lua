@@ -26,8 +26,8 @@ return {
     --   o.buf = ctx.__CTX.bufnr
     --   LazyVim.pick.open(ctx.__INFO.cmd, o)
     -- end
-    config.defaults.actions.files["alt-c"] = config.defaults.actions.files["ctrl-r"]
-    config.set_action_helpstr(config.defaults.actions.files["ctrl-r"], "toggle-root-dir")
+    -- config.defaults.actions.files["alt-c"] = config.defaults.actions.files["ctrl-r"]
+    -- config.set_action_helpstr(config.defaults.actions.files["ctrl-r"], "toggle-root-dir")
 
     local img_previewer ---@type string[]?
     for _, v in ipairs({
