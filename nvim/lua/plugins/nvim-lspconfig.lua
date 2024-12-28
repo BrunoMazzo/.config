@@ -12,6 +12,7 @@ return {
     mason_lspconfig.setup_handlers({
       -- default handler for installed servers
       function(server_name)
+
         lspconfig[server_name].setup({
           capabilities = capabilities,
         })
@@ -34,6 +35,7 @@ return {
       end,
       ["vtsls"] = function ()
         lspconfig["vtsls"].setup({
+          capabilities = capabilities,
 filetypes = {
             "javascript",
             "javascriptreact",
