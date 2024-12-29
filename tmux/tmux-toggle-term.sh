@@ -15,7 +15,7 @@ if [ -n "${FLOAT_TERM}" ]; then
   fi
 else
   if [ "${PANE_COUNT}" = 1 ]; then
-    tmux split-window -c "#{pane_current_path}"
+    tmux split-window -c "#{pane_current_path}" -l "20%"
   elif [ -n "${PANE_ZOOMED}" ]; then
     tmux select-pane -t:.-
   else
