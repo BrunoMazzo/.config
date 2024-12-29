@@ -1,6 +1,7 @@
 return {
   {
     "williamboman/mason.nvim",
+    dependencies = {"stevearc/dressing.nvim"},
     keys = { { "<leader>cm", "<cmd>Mason<cr>", desc = "Mason" } },
     config = function()
       require("mason").setup()
