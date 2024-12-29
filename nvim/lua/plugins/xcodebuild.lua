@@ -1,11 +1,9 @@
-local progress_handle
-
+local spinner = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
 return {
   "wojciech-kulik/xcodebuild.nvim",
   dependencies = {
     "nvim-telescope/telescope.nvim",
     "MunifTanjim/nui.nvim",
-  "j-hui/fidget.nvim",
     "nvim-tree/nvim-tree.lua", -- (optional) to manage project files
     "stevearc/oil.nvim", -- (optional) to manage project files
     "nvim-treesitter/nvim-treesitter", -- (optional) for Quick tests support (required Swift parser)
@@ -22,30 +20,22 @@ return {
         auto_close_on_app_launch = true,
         only_summary = true,
         notify = function(message, severity)
-          local fidget = require("fidget")
-          if progress_handle then
-            progress_handle.message = message
-            if not message:find("Loading") then
-              progress_handle:finish()
-              progress_handle = nil
-              if vim.trim(message) ~= "" then
-                fidget.notify(message, severity)
-              end
-            end
-          else
-            fidget.notify(message, severity)
+          if vim.trim(message) ~= "" then
+            vim.notify(message, severity, {
+              id = "xcodebuild",
+              opts = function(notif)
+                notif.icon = spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]
+              end,
+            })
           end
         end,
         notify_progress = function(message)
-          local progress = require("fidget.progress")
-
-          if progress_handle then
-            progress_handle.title = ""
-            progress_handle.message = message
-          else
-            progress_handle = progress.handle.create({
-              message = message,
-              lsp_client = { name = "xcodebuild.nvim" },
+          if vim.trim(message) ~= "" then
+            vim.notify(message, vim.log.levels.INFO, {
+              id = "xcodebuild",
+              opts = function(notif)
+                notif.icon = spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]
+              end,
             })
           end
         end,
