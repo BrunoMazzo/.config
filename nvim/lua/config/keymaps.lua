@@ -103,11 +103,6 @@ map("n", "<leader>xq", "<cmd>copen<cr>", { desc = "Quickfix List" })
 map("n", "[q", vim.cmd.cprev, { desc = "Previous Quickfix" })
 map("n", "]q", vim.cmd.cnext, { desc = "Next Quickfix" })
 
--- formatting
-map({ "n", "v" }, "<leader>cf", function()
-  LazyVim.format({ force = true })
-end, { desc = "Format" })
-
 -- diagnostic
 local diagnostic_goto = function(next, severity)
   local go = next and vim.diagnostic.goto_next or vim.diagnostic.goto_prev
@@ -169,14 +164,8 @@ map("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit All" })
 map("n", "<leader>ui", vim.show_pos, { desc = "Inspect Pos" })
 map("n", "<leader>uI", "<cmd>InspectTree<cr>", { desc = "Inspect Tree" })
 
--- LazyVim Changelog
-map("n", "<leader>L", function() LazyVim.news.changelog() end, { desc = "LazyVim Changelog" })
-
 -- floating terminal
-map("n", "<leader>fT", function() Snacks.terminal() end, { desc = "Terminal (cwd)" })
-map("n", "<leader>ft", function() Snacks.terminal(nil, { cwd = LazyVim.root() }) end, { desc = "Terminal (Root Dir)" })
-map("n", "<c-/>",      function() Snacks.terminal(nil, { cwd = LazyVim.root() }) end, { desc = "Terminal (Root Dir)" })
-map("n", "<c-_>",      function() Snacks.terminal(nil, { cwd = LazyVim.root() }) end, { desc = "which_key_ignore" })
+map("n", "<leader>ft", function() Snacks.terminal() end, { desc = "Terminal (cwd)" })
 
 -- Terminal Mappings
 map("t", "<C-/>", "<cmd>close<cr>", { desc = "Hide Terminal" })
