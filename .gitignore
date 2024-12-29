@@ -1,2 +1,6 @@
 tmux/plugins
 yarn/global/**
+raycast/extensions
+github-copilot
+jgit
+.DS_Store
