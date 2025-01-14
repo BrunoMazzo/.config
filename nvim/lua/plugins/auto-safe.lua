@@ -1,1 +1,7 @@
-return { "Pocco81/auto-save.nvim" }
+return {
+  "okuuva/auto-save.nvim",
+  enabled = true,
+  opts = {
+    debounce_delay = 1500,
+  },
+}
