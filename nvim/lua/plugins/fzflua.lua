@@ -1,3 +1,10 @@
+local git_grep_opts = {
+  prompt = "GitGrep❯ ",
+  cwd_header = false,
+  cmd = "git grep -i --line-number --column --color=always",
+  rg_glob = false, -- this isn't `rg`
+}
+
 return {
   "ibhagwan/fzf-lua",
   cmd = "FzfLua",
@@ -177,7 +184,14 @@ return {
     { "<leader>sd", "<cmd>FzfLua diagnostics_document<cr>", desc = "Document Diagnostics" },
     { "<leader>sD", "<cmd>FzfLua diagnostics_workspace<cr>", desc = "Workspace Diagnostics" },
     { "<leader>sg", "<cmd>FzfLua live_grep<cr>", desc = "Grep (Root Dir)" },
-    -- { "<leader>sG", LazyVim.pick("live_grep", { root = false }), desc = "Grep (cwd)" },
+    -- git_grep_opts
+    {
+      "<leader>sG",
+      function()
+        require("fzf-lua").live_grep(git_grep_opts)
+      end,
+      desc = "Grep (cwd)",
+    },
     { "<leader>sh", "<cmd>FzfLua help_tags<cr>", desc = "Help Pages" },
     { "<leader>sH", "<cmd>FzfLua highlights<cr>", desc = "Search Highlight Groups" },
     { "<leader>sj", "<cmd>FzfLua jumps<cr>", desc = "Jumplist" },
