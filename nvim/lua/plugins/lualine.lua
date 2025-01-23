@@ -1,6 +1,6 @@
 return {
   "nvim-lualine/lualine.nvim",
-  dependencies = { 'nvim-tree/nvim-web-devicons' },
+  dependencies = { "nvim-tree/nvim-web-devicons" },
   event = "VeryLazy",
   init = function()
     vim.g.lualine_laststatus = vim.o.laststatus
@@ -30,7 +30,7 @@ return {
         lualine_b = { "branch" },
 
         lualine_c = {
-		"filename"
+          { "filename", path = 1 },
         },
         lualine_x = {
           Snacks.profiler.status(),
@@ -87,21 +87,21 @@ return {
 
     -- do not add trouble symbols if aerial is enabled
     -- And allow it to be overriden for some buffer types (see autocmds)
-      local trouble = require("trouble")
-      local symbols = trouble.statusline({
-        mode = "symbols",
-        groups = {},
-        title = false,
-        filter = { range = true },
-        format = "{kind_icon}{symbol.name:Normal}",
-        hl_group = "lualine_c_normal",
-      })
-      table.insert(opts.sections.lualine_c, {
-        symbols and symbols.get,
-        cond = function()
-          return vim.b.trouble_lualine ~= false and symbols.has()
-        end,
-      })
+    local trouble = require("trouble")
+    local symbols = trouble.statusline({
+      mode = "symbols",
+      groups = {},
+      title = false,
+      filter = { range = true },
+      format = "{kind_icon}{symbol.name:Normal}",
+      hl_group = "lualine_c_normal",
+    })
+    table.insert(opts.sections.lualine_c, {
+      symbols and symbols.get,
+      cond = function()
+        return vim.b.trouble_lualine ~= false and symbols.has()
+      end,
+    })
     return opts
   end,
 }
