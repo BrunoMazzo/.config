@@ -7,7 +7,7 @@ return {
     local mason_lspconfig = require("mason-lspconfig")
 
     local blink = require("blink.cmp")
-    local capabilities = blink.get_lsp_capabilities()
+    local capabilities = blink.get_lsp_capabilities({}, true)
 
     mason_lspconfig.setup_handlers({
       -- default handler for installed servers
@@ -28,16 +28,31 @@ return {
 
         -- set keybinds
         opts.desc = "Show LSP references"
-        keymap.set("n", "gr", "<cmd>FzfLua lsp_references jump_to_single_result=true ignore_current_line=true<cr>", opts) -- show definition, references
+        keymap.set(
+          "n",
+          "gr",
+          "<cmd>FzfLua lsp_references jump_to_single_result=true ignore_current_line=true<cr>",
+          opts
+        ) -- show definition, references
 
         opts.desc = "Go to declaration"
         keymap.set("n", "gD", "<cmd>FzfLua lsp_declarations jump_to_single_result=true<cr>", opts) -- go to declaration
 
         opts.desc = "Show LSP definitions"
-        keymap.set("n", "gd", "<cmd>FzfLua lsp_definitions jump_to_single_result=true ignore_current_line=true<cr>", opts) -- show lsp definitions
+        keymap.set(
+          "n",
+          "gd",
+          "<cmd>FzfLua lsp_definitions jump_to_single_result=true ignore_current_line=true<cr>",
+          opts
+        ) -- show lsp definitions
 
         opts.desc = "Show LSP implementations"
-        keymap.set("n", "gi", "<cmd>FzfLua lsp_implementations jump_to_single_result=true ignore_current_line=true<cr>", opts) -- show lsp implementations
+        keymap.set(
+          "n",
+          "gi",
+          "<cmd>FzfLua lsp_implementations jump_to_single_result=true ignore_current_line=true<cr>",
+          opts
+        ) -- show lsp implementations
 
         opts.desc = "Show LSP type definitions"
         keymap.set("n", "gy", "<cmd>FzfLua lsp_typedefs jump_to_single_result=true ignore_current_line=true<cr>", opts) -- show lsp type definitions
@@ -62,6 +77,30 @@ return {
 
         opts.desc = "Restart LSP"
         keymap.set("n", "<leader>rs", ":LspRestart<CR>", opts) -- mapping to restart lsp if necessary
+      end,
+    })
+
+    -- Go auto import
+    vim.api.nvim_create_autocmd("BufWritePre", {
+      pattern = "*.go",
+      callback = function()
+        local params = vim.lsp.util.make_range_params()
+        params.context = { only = { "source.organizeImports" } }
+        -- buf_request_sync defaults to a 1000ms timeout. Depending on your
+        -- machine and codebase, you may want longer. Add an additional
+        -- argument after params if you find that you have to write the file
+        -- twice for changes to be saved.
+        -- E.g., vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, 3000)
+        local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params)
+        for cid, res in pairs(result or {}) do
+          for _, r in pairs(res.result or {}) do
+            if r.edit then
+              local enc = (vim.lsp.get_client_by_id(cid) or {}).offset_encoding or "utf-16"
+              vim.lsp.util.apply_workspace_edit(r.edit, enc)
+            end
+          end
+        end
+        vim.lsp.buf.format({ async = false })
       end,
     })
   end,
