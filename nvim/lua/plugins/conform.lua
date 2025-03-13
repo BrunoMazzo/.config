@@ -7,7 +7,7 @@ return {
     {
       "<leader>cf",
       function()
-        require("conform").format({ timeout_ms = 3000 })
+        require("conform").format({ async = true })
       end,
       mode = { "n", "v" },
       desc = "Format Injected Langs",
@@ -18,10 +18,11 @@ return {
 
     conform.setup({
       formatters_by_ft = {
-        javascript = { "prettier" },
-        typescript = { "prettier" },
-        javascriptreact = { "prettier" },
-        typescriptreact = { "prettier" },
+        go = { "gofmt" },
+        javascript = { "prettier"},
+        typescript = { "prettier"},
+        javascriptreact = { "prettier"},
+        typescriptreact = { "prettier"},
         svelte = { "prettier" },
         css = { "prettier" },
         html = { "prettier" },
