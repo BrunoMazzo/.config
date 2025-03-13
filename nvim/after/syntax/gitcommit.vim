@@ -1,1 +1,1 @@
-:set textwidth=0
+:set textwidth=150
