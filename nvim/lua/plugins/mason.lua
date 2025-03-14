@@ -1,7 +1,7 @@
 return {
   {
     "williamboman/mason.nvim",
-    dependencies = {"stevearc/dressing.nvim"},
+    dependencies = { "stevearc/dressing.nvim" },
     keys = { { "<leader>cm", "<cmd>Mason<cr>", desc = "Mason" } },
     config = function()
       require("mason").setup()
@@ -29,7 +29,21 @@ return {
       mason_tool_installer.setup({
         ensure_installed = {
           "stylua",
-					"eslint_d",
+          "eslint_d",
+        },
+      })
+    end,
+  },
+  {
+    "jay-babu/mason-nvim-dap.nvim",
+    dependencies = { "williamboman/mason.nvim" },
+    config = function()
+      local mason_dap = require("mason-nvim-dap")
+      mason_dap.setup({
+        automatic_installation = true,
+        ensure_installed = {
+          "delve",
+          "js-debug-adapter",
         },
       })
     end,
