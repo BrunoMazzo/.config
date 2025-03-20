@@ -1,4 +1,4 @@
-return {{
+return {
   "lewis6991/gitsigns.nvim",
   event = { "BufReadPost", "BufWritePost", "BufNewFile" },
   opts = {
@@ -24,7 +24,6 @@ return {{
         vim.keymap.set(mode, l, r, { buffer = buffer, desc = desc })
       end
 
-      -- stylua: ignore start
       map("n", "]h", function()
         if vim.wo.diff then
           vim.cmd.normal({ "]c", bang = true })
@@ -32,70 +31,71 @@ return {{
           gs.nav_hunk("next")
         end
       end, "Next Hunk")
+
       map("n", "[h", function()
         if vim.wo.diff then
           vim.cmd.normal({ "[c", bang = true })
         else
           gs.nav_hunk("prev")
         end
+      end, "Previous Hunk")
 
-        -- Navigation
-        map("n", "]c", function()
-          if vim.wo.diff then
-            vim.cmd.normal({ "]c", bang = true })
-          else
-            gitsigns.nav_hunk("next")
-          end
-        end)
+      -- Navigation
+      map("n", "]c", function()
+        if vim.wo.diff then
+          vim.cmd.normal({ "]c", bang = true })
+        else
+          gs.nav_hunk("next")
+        end
+      end, "Next Hunk")
 
-        map("n", "[c", function()
-          if vim.wo.diff then
-            vim.cmd.normal({ "[c", bang = true })
-          else
-            gitsigns.nav_hunk("prev")
-          end
-        end)
+      map("n", "[c", function()
+        if vim.wo.diff then
+          vim.cmd.normal({ "[c", bang = true })
+        else
+          gs.nav_hunk("prev")
+        end
+      end, "Previous Hunk")
 
-        -- Actions
-        map("n", "<leader>hs", gitsigns.stage_hunk)
-        map("n", "<leader>hr", gitsigns.reset_hunk)
+      -- Actions
+      map("n", "<leader>hs", gs.stage_hunk, "Stage Hunk")
+      map("n", "<leader>hr", gs.reset_hunk, "Reset Hunk")
 
-        map("v", "<leader>hs", function()
-          gitsigns.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
-        end)
+      map("v", "<leader>hs", function()
+        gs.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
+      end, "Stage Hunk")
 
-        map("v", "<leader>hr", function()
-          gitsigns.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
-        end)
+      map("v", "<leader>hr", function()
+        gs.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
+      end, "Reset Hunk")
 
-        map("n", "<leader>hS", gitsigns.stage_buffer)
-        map("n", "<leader>hR", gitsigns.reset_buffer)
-        map("n", "<leader>hp", gitsigns.preview_hunk)
-        map("n", "<leader>hi", gitsigns.preview_hunk_inline)
+      map("n", "<leader>hS", gs.stage_buffer, "Stage Buffer")
+      map("n", "<leader>hR", gs.reset_buffer, "Reset Buffer")
+      map("n", "<leader>hp", gs.preview_hunk, "Preview Hunk")
+      map("n", "<leader>hi", gs.preview_hunk_inline, "Preview Hunk Inline")
 
-        map("n", "<leader>hb", function()
-          gitsigns.blame_line({ full = true })
-        end)
+      map("n", "<leader>hb", function()
+        gs.blame_line({ full = true })
+      end, "Blame Line")
 
-        map("n", "<leader>hd", gitsigns.diffthis)
+      map("n", "<leader>hd", gs.diffthis, "Diff This")
 
-        map("n", "<leader>hD", function()
-          gitsigns.diffthis("~")
-        end)
+      map("n", "<leader>hD", function()
+        gs.diffthis("~")
+      end, "Diff All")
 
-        map("n", "<leader>hQ", function()
-          gitsigns.setqflist("all")
-        end)
-        map("n", "<leader>hq", gitsigns.setqflist)
+      map("n", "<leader>hQ", function()
+        gs.setqflist("all")
+      end, "Quickfix List All")
+      map("n", "<leader>hq", gs.setqflist, "Quickfix List")
 
-        -- Toggles
-        map("n", "<leader>tb", gitsigns.toggle_current_line_blame)
-        map("n", "<leader>td", gitsigns.toggle_deleted)
-        map("n", "<leader>tw", gitsigns.toggle_word_diff)
+      -- Toggles
+      map("n", "<leader>tb", gs.toggle_current_line_blame, "Toggle Blame")
+      map("n", "<leader>td", gs.toggle_deleted, "Toggle Deleted")
+      map("n", "<leader>tw", gs.toggle_word_diff, "Toggle Word Diff")
 
-        -- Text object
-        map({ "o", "x" }, "ih", gitsigns.select_hunk)
-      end,
-    }):map("<leader>uG")
-  end,
-}}
+      -- Text object
+      map({ "o", "x" }, "ih", gs.select_hunk, "Select Hunk")
+    end,
+  },
+}
