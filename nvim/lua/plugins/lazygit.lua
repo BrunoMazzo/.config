@@ -41,8 +41,8 @@ return {
       end,
       desc = "Git pull",
     },
-    config = function(opts)
-      require("lazygit").setup(opts)
+    config = function()
+      require("lazygit").setup({})
     end,
   },
 }

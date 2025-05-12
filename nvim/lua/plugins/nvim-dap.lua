@@ -47,7 +47,8 @@ return {
     }
     local dap = require("dap")
 
-    local dapDebugServerJsPath = require("mason-registry").get_package("js-debug-adapter"):get_install_path()
+    
+    local dapDebugServerJsPath = vim.fn.exepath("js-debug-adapter")
       .. "/js-debug/src/dapDebugServer.js"
 
     dap.adapters["pwa-node"] = {

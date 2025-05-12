@@ -3,20 +3,70 @@ return {
   config = function()
     local lspconfig = require("lspconfig")
 
-    -- import mason_lspconfig plugin
-    local mason_lspconfig = require("mason-lspconfig")
-
     local blink = require("blink.cmp")
-    local capabilities = blink.get_lsp_capabilities({}, true)
+    local capabilities = blink.get_lsp_capabilities({})
 
-    mason_lspconfig.setup_handlers({
-      -- default handler for installed servers
-      function(server_name)
-        lspconfig[server_name].setup({
-          capabilities = capabilities,
-        })
-      end,
+    vim.lsp.inlay_hint.enable(true)
+    lspconfig.gopls.setup({
+      capabilities = capabilities,
+      settings = {
+        gopls = {
+          buildFlags = { "-tags=integration" },
+          analyses = {
+            unusedparams = true,
+            -- shadow = true,
+          },
+          staticcheck = true,
+          hints = {
+            rangeVariableTypes = true,
+            parameterNames = true,
+            constantValues = true,
+            assignVariableTypes = true,
+            compositeLiteralFields = true,
+            compositeLiteralTypes = true,
+            functionTypeParameters = true,
+          },
+        },
+      },
     })
+
+    lspconfig.vtsls.setup({
+      capabilities = capabilities,
+      settings = {
+        complete_function_calls = true,
+        vtsls = {
+          enableMoveToFileCodeAction = true,
+          autoUseWorkspaceTsdk = true,
+          experimental = {
+            maxInlayHintLength = 30,
+            completion = {
+              enableServerSideFuzzyMatch = true,
+            },
+          },
+        },
+        typescript = {
+          updateImportsOnFileMove = { enabled = "always" },
+          suggest = {
+            completeFunctionCalls = true,
+          },
+          inlayHints = {
+            enumMemberValues = { enabled = true },
+            functionLikeReturnTypes = { enabled = true },
+            parameterNames = { enabled = "literals" },
+            parameterTypes = { enabled = true },
+            propertyDeclarationTypes = { enabled = true },
+            variableTypes = { enabled = false },          },
+        },
+      },
+    })
+    -- mason_lspconfig.setup_handlers({
+    --   -- default handler for installed servers
+    --   function(server_name)
+    --     lspconfig[server_name].setup({
+    --       capabilities = capabilities,
+    --     })
+    --   end,
+    -- })
 
     local keymap = vim.keymap
     vim.api.nvim_create_autocmd("LspAttach", {
@@ -28,34 +78,19 @@ return {
 
         -- set keybinds
         opts.desc = "Show LSP references"
-        keymap.set(
-          "n",
-          "gr",
-          "<cmd>FzfLua lsp_references jump_to_single_result=true ignore_current_line=true<cr>",
-          opts
-        ) -- show definition, references
+        keymap.set("n", "gr", "<cmd>FzfLua lsp_references jump1=true ignore_current_line=true<cr>", opts) -- show definition, references
 
         opts.desc = "Go to declaration"
-        keymap.set("n", "gD", "<cmd>FzfLua lsp_declarations jump_to_single_result=true<cr>", opts) -- go to declaration
+        keymap.set("n", "gD", "<cmd>FzfLua lsp_declarations jump1=true<cr>", opts) -- go to declaration
 
         opts.desc = "Show LSP definitions"
-        keymap.set(
-          "n",
-          "gd",
-          "<cmd>FzfLua lsp_definitions jump_to_single_result=true ignore_current_line=true<cr>",
-          opts
-        ) -- show lsp definitions
+        keymap.set("n", "gd", "<cmd>FzfLua lsp_definitions jump1=true ignore_current_line=true<cr>", opts) -- show lsp definitions
 
         opts.desc = "Show LSP implementations"
-        keymap.set(
-          "n",
-          "gi",
-          "<cmd>FzfLua lsp_implementations jump_to_single_result=true ignore_current_line=true<cr>",
-          opts
-        ) -- show lsp implementations
+        keymap.set("n", "gi", "<cmd>FzfLua lsp_implementations jump1=true ignore_current_line=true<cr>", opts) -- show lsp implementations
 
         opts.desc = "Show LSP type definitions"
-        keymap.set("n", "gy", "<cmd>FzfLua lsp_typedefs jump_to_single_result=true ignore_current_line=true<cr>", opts) -- show lsp type definitions
+        keymap.set("n", "gy", "<cmd>FzfLua lsp_typedefs jump1=true ignore_current_line=true<cr>", opts) -- show lsp type definitions
 
         opts.desc = "See available code actions"
         keymap.set({ "n", "v" }, "<leader>ca", "<cmd>FzfLua lsp_code_actions<cr>", opts) -- see available code actions, in visual mode will apply to selection
