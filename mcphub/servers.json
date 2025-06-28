@@ -1,0 +1,47 @@
+{
+  "mcpServers": {
+    "github.com/modelcontextprotocol/servers/tree/main/src/sequentialthinking": {
+      "autoApprove": [
+        "sequentialthinking"
+      ],
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ]
+    },
+    "github.com/modelcontextprotocol/servers/tree/main/src/git": {
+      "autoApprove": [
+        "git_status",
+        "git_diff_unstaged",
+        "git_diff_staged",
+        "git_diff",
+        "git_commit",
+        "git_add",
+        "git_reset",
+        "git_log",
+        "git_create_branch",
+        "git_checkout",
+        "git_show"
+      ],
+      "command": "/Users/brunomazzo/.local/bin/mcp-server-git",
+      "args": [
+        
+      ]
+    },
+    "github.com/upstash/context7-mcp": {
+      "autoApprove": [
+        "resolve-library-id",
+        "get-library-docs"
+      ],
+      "command": "npx",
+      "args": [
+        "-y", 
+        "@upstash/context7-mcp"
+      ]
+    }
+  },
+  "nativeMCPServers": [
+    
+  ]
+}

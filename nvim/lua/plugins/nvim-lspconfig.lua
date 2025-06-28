@@ -14,7 +14,8 @@ return {
           buildFlags = { "-tags=integration" },
           analyses = {
             unusedparams = true,
-            -- shadow = true,
+            unusedwrite = true,
+            shadow = true,
           },
           staticcheck = true,
           hints = {
@@ -55,7 +56,8 @@ return {
             parameterNames = { enabled = "literals" },
             parameterTypes = { enabled = true },
             propertyDeclarationTypes = { enabled = true },
-            variableTypes = { enabled = false },          },
+            variableTypes = { enabled = false },
+          },
         },
       },
     })
