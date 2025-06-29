@@ -11,48 +11,52 @@ return {
     end
   end,
   event = "VeryLazy",
-  -- version = false, -- Never set this value to "*"! Never!
-  version = "v0.0.25", -- Use a specific version to avoid breaking changes
-  opts = {
-    provider = "claude",
-    providers = {
-      claude = {
-        endpoint = "https://api.anthropic.com",
-        model = "claude-sonnet-4-20250514",
-        timeout = 30000, -- Timeout in milliseconds
+  version = false, -- Never set this value to "*"! Never!
+  ---@module 'avante'
+  ---@type avante.Config
+  config = function(_, opts)
+    require("avante").setup({
+      -- add any opts here
+      -- for example
+      provider = "claude",
+      providers = {
+        claude = {
+          endpoint = "https://api.anthropic.com",
+          model = "claude-3-5-sonnet-20241022",
+          timeout = 30000, -- Timeout in milliseconds
           extra_request_body = {
-            temperature = 0.75,
-            max_tokens = 20480,
+            temperature = 0,
+            max_tokens = 4096,
           },
+        },
       },
-    },
-    -- system_prompt as function ensures LLM always has latest MCP server state
-    -- This is evaluated for every message, even in existing chats
-    system_prompt = function()
-      local hub = require("mcphub").get_hub_instance()
-      return hub and hub:get_active_servers_prompt() or ""
-    end,
-    -- Using function prevents requiring mcphub before it's loaded
-    custom_tools = function()
-      return {
-        require("mcphub.extensions.avante").mcp_tool(),
-      }
-    end,
-    disabled_tools = {
-      "list_files", -- Built-in file operations
-      "search_files",
-      "read_file",
-      "create_file",
-      "rename_file",
-      "delete_file",
-      "create_dir",
-      "rename_dir",
-      "delete_dir",
-      "bash", -- Built-in terminal access
-    },
-  },
+      -- system_prompt as function ensures LLM always has latest MCP server state
+      -- This is evaluated for every message, even in existing chats
+      system_prompt = function()
+        local hub = require("mcphub").get_hub_instance()
+        return hub and hub:get_active_servers_prompt() or ""
+      end,
+      -- Using function prevents requiring mcphub before it's loaded
+      custom_tools = function()
+        return {
+          require("mcphub.extensions.avante").mcp_tool(),
+        }
+      end,
+      disabled_tools = {
+        "list_files", -- Built-in file operations
+        "search_files",
+        "read_file",
+        "create_file",
+        "rename_file",
+        "delete_file",
+        "create_dir",
+        "rename_dir",
+        "delete_dir",
+        "bash", -- Built-in terminal access
+      },
+    })
+  end,
   dependencies = {
-    "nvim-treesitter/nvim-treesitter",
     "nvim-lua/plenary.nvim",
     "MunifTanjim/nui.nvim",
     --- The below dependencies are optional,
@@ -83,7 +87,7 @@ return {
     },
     {
       -- Make sure to set this up properly if you have lazy=true
-      'MeanderingProgrammer/render-markdown.nvim',
+      "MeanderingProgrammer/render-markdown.nvim",
       opts = {
         file_types = { "markdown", "Avante" },
       },
