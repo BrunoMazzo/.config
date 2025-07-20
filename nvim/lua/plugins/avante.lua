@@ -18,6 +18,7 @@ return {
     require("avante").setup({
       -- add any opts here
       -- for example
+      auto_suggestions_provider = "claude",
       provider = "claude",
       providers = {
         claude = {
@@ -29,6 +30,19 @@ return {
             max_tokens = 20480,
           },
         },
+      },
+      behaviour = {
+        auto_suggestions = true, -- Experimental stage
+        auto_set_highlight_group = true,
+        auto_set_keymaps = true,
+        auto_apply_diff_after_generation = false,
+        support_paste_from_clipboard = false,
+        minimize_diff = true, -- Whether to remove unchanged lines when applying a code block
+        enable_token_counting = true, -- Whether to enable token counting. Default to true.
+        auto_approve_tool_permissions = false, -- Default: show permission prompts for all tools
+        -- Examples:
+        -- auto_approve_tool_permissions = true,                -- Auto-approve all tools (no prompts)
+        -- auto_approve_tool_permissions = {"bash", "replace_in_file"}, -- Auto-approve specific tools only
       },
       -- system_prompt as function ensures LLM always has latest MCP server state
       -- This is evaluated for every message, even in existing chats
