@@ -1,6 +1,6 @@
 return {
   "rmagatti/auto-session",
-  enable = true,
+  enabled = false,
   config = function()
     local auto_session = require("auto-session")
 
