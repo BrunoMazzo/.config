@@ -13,6 +13,9 @@ vim.g.snacks_animate = true
 -- You can disable this for a buffer by setting `vim.b.trouble_lualine = false`
 vim.g.trouble_lualine = true
 
+-- Enable auto read for opencode
+vim.opt.autoread = true
+
 local opt = vim.opt
 
 opt.autowrite = true -- Enable auto write
@@ -32,7 +35,7 @@ opt.fillchars = {
   diff = "╱",
   eob = " ",
 }
-opt.foldcolumn = '1'
+opt.foldcolumn = "1"
 opt.foldlevel = 99
 opt.foldlevelstart = 99
 opt.foldenable = true
@@ -58,7 +61,7 @@ opt.shiftround = true -- Round indent
 opt.shiftwidth = 2 -- Size of an indent
 opt.shortmess:append({ W = true, I = true, c = true, C = true })
 opt.showmode = false -- Dont show mode since we have a statusline
-opt.sidescrolloff = 8 -- Columns of context
+-- opt.sidescrolloff = 8 -- Columns of context // Updating in the minimap
 opt.signcolumn = "yes" -- Always show the signcolumn, otherwise it would shift the text each time
 opt.smartcase = true -- Don't ignore case with capitals
 opt.smartindent = true -- Insert indents automatically
@@ -78,15 +81,10 @@ opt.wildmode = "longest:full,full" -- Command-line completion mode
 opt.winminwidth = 5 -- Minimum window width
 opt.wrap = false -- Disable line wrap
 
-if vim.fn.has("nvim-0.10") == 1 then
-  opt.smoothscroll = true
-  -- opt.foldexpr = "v:lua.require'lazyvim.util'.ui.foldexpr()"
-  -- opt.foldmethod = "expr"
-  -- opt.foldtext = ""
-else
-  -- opt.foldmethod = "indent"
-  -- opt.foldtext = "v:lua.require'lazyvim.util'.ui.foldtext()"
-end
+opt.smoothscroll = true
+-- opt.foldexpr = "v:lua.require'lazyvim.util'.ui.foldexpr()"
+-- opt.foldmethod = "expr"
+-- opt.foldtext = ""
 
 -- Fix markdown indentation settings
 vim.g.markdown_recommended_style = 0

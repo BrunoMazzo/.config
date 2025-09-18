@@ -1,6 +1,6 @@
 return ---@module "neominimap.config.meta"
 {
-    "Isrothy/neominimap.nvim",
+  "Isrothy/neominimap.nvim",
   version = "v3.x.x",
   lazy = false, -- NOTE: NO NEED to Lazy load
   -- Optional. You can alse set your own keybindings
@@ -43,6 +43,7 @@ return ---@module "neominimap.config.meta"
     ---@type Neominimap.UserConfig
     vim.g.neominimap = {
       auto_enable = true,
+      y_multiplier = 4,
     }
   end,
 }
