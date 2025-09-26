@@ -20,7 +20,7 @@ return {
     { '<S-C-d>',    function() require('opencode').command('messages_half_page_down') end, desc = 'Scroll messages down', },
     { '<leader>op', function() require('opencode').select_prompt() end, desc = 'Select prompt', mode = { 'n', 'v', }, },
     -- Example: keymap for custom prompt
-    { '<leader>oc', function() require('opencode').prompt("Commit current changes") end, desc = "Commit changes", },
-     { '<leader>oC', function() require('opencode').prompt("Commit current changes, push them, and create a PR. Check if the branch has a jira ticket tag, if it does, use the tag in the PR name") end, desc = "Commit, push, and PR", },
+    { '<leader>oc', function() require('opencode').prompt("/commit") end, desc = "Commit changes", },
+     { '<leader>oC', function() require('opencode').prompt("/pr") end, desc = "Create an PR", },
   },
 }

@@ -1,13 +1,13 @@
 return {
   "neovim/nvim-lspconfig",
   config = function()
-    local lspconfig = require("lspconfig")
+    local lspconfig = vim.lsp.config
 
     local blink = require("blink.cmp")
     local capabilities = blink.get_lsp_capabilities({})
 
     vim.lsp.inlay_hint.enable(true)
-    lspconfig.gopls.setup({
+    vim.lsp.config('gopls', {
       capabilities = capabilities,
       settings = {
         gopls = {
@@ -31,7 +31,7 @@ return {
       },
     })
 
-    lspconfig.vtsls.setup({
+    vim.lsp.config("ts_ls", {
       capabilities = capabilities,
       settings = {
         complete_function_calls = true,
@@ -62,15 +62,15 @@ return {
       },
     })
 
-    lspconfig.sourcekit.setup({
-      cmd = { vim.trim(vim.fn.system("xcrun -f sourcekit-lsp")), },
-      capabilities = capabilities,
-      on_init = function(client)
-        -- HACK: to fix some issues with LSP
-        -- more details: https://github.com/neovim/neovim/issues/19237#issuecomment-2237037154
-        client.offset_encoding = "utf-8"
-      end,
-    })
+    -- lspconfig.sourcekit.setup({
+    --   cmd = { vim.trim(vim.fn.system("xcrun -f sourcekit-lsp")), },
+    --   capabilities = capabilities,
+    --   on_init = function(client)
+    --     -- HACK: to fix some issues with LSP
+    --     -- more details: https://github.com/neovim/neovim/issues/19237#issuecomment-2237037154
+    --     client.offset_encoding = "utf-8"
+    --   end,
+    -- })
     -- mason_lspconfig.setup_handlers({
     --   -- default handler for installed servers
     --   function(server_name)
