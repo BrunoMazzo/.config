@@ -2,19 +2,16 @@ return {
   {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
-    branch = "master",
-    cmd = { "TSUpdateSync", "TSUpdate", "TSInstall" },
+    branch = "main",
+    lazy = false,
     keys = {
       { "<c-space>", desc = "Increment Selection" },
       { "<bs>", desc = "Decrement Selection", mode = "x" },
     },
-    config = function()
-      local configs = require("nvim-treesitter.configs")
-
-      configs.setup({
-        highlight = { enable = true },
-        indent = { enable = true },
-        ensure_installed = {
+    init = function()
+      local treesitter = require("nvim-treesitter")
+      treesitter
+        .install({
           "bash",
           "c",
           "diff",
@@ -23,6 +20,7 @@ return {
           "jsdoc",
           "json",
           "jsonc",
+          "jsx",
           "lua",
           "luadoc",
           "luap",
@@ -35,30 +33,30 @@ return {
           "toml",
           "tsx",
           "typescript",
+          "typescriptreact",
           "swift",
           "vim",
           "vimdoc",
           "xml",
           "yaml",
-        },
-        incremental_selection = {
-          enable = true,
-          keymaps = {
-            init_selection = "<C-space>",
-            node_incremental = "<C-space>",
-            scope_incremental = false,
-            node_decremental = "<bs>",
-          },
-        },
-        textobjects = {
-          move = {
-            enable = true,
-            goto_next_start = { ["]f"] = "@function.outer", ["]c"] = "@class.outer", ["]a"] = "@parameter.inner" },
-            goto_next_end = { ["]F"] = "@function.outer", ["]C"] = "@class.outer", ["]A"] = "@parameter.inner" },
-            goto_previous_start = { ["[f"] = "@function.outer", ["[c"] = "@class.outer", ["[a"] = "@parameter.inner" },
-            goto_previous_end = { ["[F"] = "@function.outer", ["[C"] = "@class.outer", ["[A"] = "@parameter.inner" },
-          },
-        },
+        })
+        :wait(300000)
+
+      -- vim.treesitter.language.register("tsx", { "typescriptreact" })
+
+      -- auto-start highlights & indentation
+      vim.api.nvim_create_autocmd("FileType", {
+        desc = "User: enable treesitter highlighting",
+        callback = function(ctx)
+          -- highlights
+          local hasStarted = pcall(vim.treesitter.start, ctx.buf) -- errors for filetypes with no parser
+
+          -- indent
+          local dontUseTreesitterIndent = { "bash", "zsh", "markdown", "javascript" }
+          if hasStarted and not vim.list_contains(dontUseTreesitterIndent, ctx.match) then
+            vim.bo[ctx.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+          end
+        end,
       })
     end,
   },
@@ -66,7 +64,7 @@ return {
     "nvim-treesitter/nvim-treesitter-textobjects",
     dependencies = { "nvim-treesitter/nvim-treesitter" },
     event = "VeryLazy",
-    enabled = true,
+    enabled = false,
     config = function()
       -- When in diff mode, we want to use the default
       -- vim text objects c & C instead of the treesitter ones.
