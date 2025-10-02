@@ -1,14 +1,10 @@
 return {
   "neovim/nvim-lspconfig",
   config = function()
-    local lspconfig = vim.lsp.config
-
-    local blink = require("blink.cmp")
-    local capabilities = blink.get_lsp_capabilities({})
-
     vim.lsp.inlay_hint.enable(true)
-    vim.lsp.config('gopls', {
-      capabilities = capabilities,
+
+    -- vim.lsp.enable("gopls")
+    vim.lsp.config("gopls", {
       settings = {
         gopls = {
           buildFlags = { "-tags=integration" },
@@ -30,38 +26,11 @@ return {
         },
       },
     })
-
-    vim.lsp.config("ts_ls", {
-      capabilities = capabilities,
-      settings = {
-        complete_function_calls = true,
-        vtsls = {
-          enableMoveToFileCodeAction = true,
-          autoUseWorkspaceTsdk = true,
-          experimental = {
-            maxInlayHintLength = 30,
-            completion = {
-              enableServerSideFuzzyMatch = true,
-            },
-          },
-        },
-        typescript = {
-          updateImportsOnFileMove = { enabled = "always" },
-          suggest = {
-            completeFunctionCalls = true,
-          },
-          inlayHints = {
-            enumMemberValues = { enabled = true },
-            functionLikeReturnTypes = { enabled = true },
-            parameterNames = { enabled = "literals" },
-            parameterTypes = { enabled = true },
-            propertyDeclarationTypes = { enabled = true },
-            variableTypes = { enabled = false },
-          },
-        },
-      },
-    })
-
+    --
+    -- Using Typescript tools for the LSP management
+    -- vim.lsp.enable("ts_ls")
+    -- vim.lsp.enable("eslint")
+    --
     -- lspconfig.sourcekit.setup({
     --   cmd = { vim.trim(vim.fn.system("xcrun -f sourcekit-lsp")), },
     --   capabilities = capabilities,
@@ -114,16 +83,49 @@ return {
         keymap.set("n", "<leader>d", vim.diagnostic.open_float, opts) -- show diagnostics for line
 
         opts.desc = "Go to previous diagnostic"
-        keymap.set("n", "[d", function() vim.diagnostic.jump({count = -1, float = true}) end, opts) -- jump to previous diagnostic in buffer
+        keymap.set("n", "[d", function()
+          vim.diagnostic.jump({ count = -1, float = true })
+        end, opts) -- jump to previous diagnostic in buffer
 
         opts.desc = "Go to next diagnostic"
-        keymap.set("n", "]d", function() vim.diagnostic.jump({count = 1, float = true}) end, opts) -- jump to next diagnostic in buffer
+        keymap.set("n", "]d", function()
+          vim.diagnostic.jump({ count = 1, float = true })
+        end, opts) -- jump to next diagnostic in buffer
 
         opts.desc = "Show documentation for what is under cursor"
         keymap.set("n", "K", vim.lsp.buf.hover, opts) -- show documentation for what is under cursor
 
         opts.desc = "Restart LSP"
         keymap.set("n", "<leader>rs", ":LspRestart<CR>", opts) -- mapping to restart lsp if necessary
+      end,
+    })
+
+    vim.api.nvim_create_autocmd("LspAttach", {
+      pattern = { "*.ts", "*.tsx" },
+      group = vim.api.nvim_create_augroup("UserLspConfig-ts_ls", {}),
+      callback = function(ev)
+        -- Buffer local mappings.
+        -- See `:help vim.lsp.*` for documentation on any of the below functions
+        local opts = { buffer = ev.buf, silent = true }
+
+        -- set keybinds
+        opts.desc = "Organize imports"
+        keymap.set("n", "<leader>co", "<cmd>TSToolsOrganizeImports<cr>", opts)
+
+        opts.desc = "Fix all imports"
+        keymap.set("n", "<leader>cI", "<cmd>TSToolsAddMissingImports<cr><cmd>TSToolsRemoveUnused<cr>", opts)
+
+        opts.desc = "Add missing imports"
+        keymap.set("n", "<leader>ci", "<cmd>TSToolsAddMissingImports<cr>", opts)
+
+        opts.desc = "Fix all"
+        keymap.set("n", "<leader>cF", "<cmd>LspEslintFixAll<cr>", opts)
+
+        -- Autocmd to fix ESLint errors on save
+        vim.api.nvim_create_autocmd("BufWritePre", {
+          buffer = ev.buf,
+          command = "LspEslintFixAll", -- Or a similar command provided by your ESLint LSP setup
+        })
       end,
     })
 

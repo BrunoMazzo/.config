@@ -17,7 +17,8 @@ return {
         automatic_installation = true,
         ensure_installed = {
           "lua_ls",
-          "ts_ls",
+          -- Typescript tools is managing it
+          -- "ts_ls",
         },
       })
     end,
