@@ -37,7 +37,7 @@ return ---@module "neominimap.config.meta"
   init = function()
     -- The following options are recommended when layout == "float"
     vim.opt.wrap = false
-    vim.opt.sidescrolloff = 36 -- Set a large value
+    vim.opt.sidescrolloff = 40 -- Set a large value
 
     --- Put your configuration here
     ---@type Neominimap.UserConfig

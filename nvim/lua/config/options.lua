@@ -88,3 +88,15 @@ opt.smoothscroll = true
 
 -- Fix markdown indentation settings
 vim.g.markdown_recommended_style = 0
+
+-- Relative number colors
+-- Set the color for all line numbers
+vim.api.nvim_set_hl(0, 'LineNr', { fg = '#777777' }) -- A light gray
+
+-- Set the color for the line number on the current cursor line
+vim.api.nvim_set_hl(0, 'CursorLineNr', { fg = '#FFFFFF', bold = true }) -- White and bold
+
+-- Set colors for relative line numbers above and below the cursor
+-- vim.api.nvim_set_hl(0, 'LineNrAbove', { fg = '#51B3EC' }) -- A light blue
+-- vim.api.nvim_set_hl(0, 'LineNrBelow', { fg = '#FB508F' }) -- A pinkish red
+
