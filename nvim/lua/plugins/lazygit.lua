@@ -21,7 +21,7 @@ return {
       function()
         local Job = require("plenary.job")
         ---@diagnostic disable: missing-fields
-        vim.notify("Pulling latest changes from remote", "info", { title = "Git pull" })
+        vim.notify("Pulling latest changes from remote", vim.log.levels.INFO, { title = "Git pull" })
 
         Job:new({
           command = "git",
@@ -34,7 +34,32 @@ return {
               vim.notify("Failed to pull")
               return
             else
-              vim.notify("Pulled latest changes from remote", "info", { title = "Git pull" })
+              vim.notify("Pulled latest changes from remote", vim.log.levels.INFO, { title = "Git pull" })
+            end
+          end,
+        }):start()
+      end,
+      desc = "Git pull",
+    },
+    {
+      "<leader>gP",
+      function()
+        local Job = require("plenary.job")
+        ---@diagnostic disable: missing-fields
+        vim.notify("Pushed latest changes from remote", vim.log.levels.INFO, { title = "Git push" })
+
+        Job:new({
+          command = "git",
+          args = {
+            "push",
+          },
+          cwd = vim.loop.cwd(),
+          on_exit = function(j, return_val)
+            if return_val ~= 0 then
+              vim.notify("Failed to pull")
+              return
+            else
+              vim.notify("Pushed latest changes to remote", vim.log.levels.INFO, { title = "Git push" })
             end
           end,
         }):start()
