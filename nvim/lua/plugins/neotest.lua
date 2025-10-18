@@ -1,6 +1,6 @@
 return {
   "nvim-neotest/neotest",
-  commit = "52fca671",
+  -- commit = "52fca671",
   dependencies = {
     "nvim-neotest/nvim-nio",
     "nvim-lua/plenary.nvim",
@@ -23,22 +23,11 @@ return {
     "marilari88/neotest-vitest",
   },
   config = function(_, opts)
-    local neotest_ns = vim.api.nvim_create_namespace("neotest")
-    vim.diagnostic.config({
-      virtual_text = {
-        format = function(diagnostic)
-          -- Replace newline and tab characters with space for more compact diagnostics
-          local message = diagnostic.message:gsub("\n", " "):gsub("\t", " "):gsub("%s+", " "):gsub("^%s+", "")
-          return message
-        end,
-      },
-    }, neotest_ns)
-
     ---@diagnostic disable-next-line: missing-fields
     require("neotest").setup({
       adapters = {
         require("neotest-golang")({
-          go_test_args = { "-tags=integration", "-coverprofile=" .. vim.fn.getcwd() .. "/coverage.out" },
+          go_test_args = { "-tags=integration,stripe", "-coverprofile=" .. vim.fn.getcwd() .. "/coverage.out" },
           runner = "go",
         }),
         require("neotest-playwright").adapter({
@@ -93,6 +82,14 @@ return {
       end,
       desc = "Run Nearest (Neotest)",
     },
+    {
+      "<leader>td",
+      function()
+        require("neotest").run.run({strategy = "dap"})
+      end,
+      desc = "Debug Nearest (Neotest)",
+    },
+
     {
       "<leader>tl",
       function()

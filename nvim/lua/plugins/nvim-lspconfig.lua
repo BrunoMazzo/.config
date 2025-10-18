@@ -110,13 +110,13 @@ return {
 
         -- set keybinds
         opts.desc = "Organize imports"
-        keymap.set("n", "<leader>co", "<cmd>TSToolsOrganizeImports<cr>", opts)
+        keymap.set("n", "<leader>co", "<cmd>TSToolsOrganizeImports sync<cr>", opts)
 
         opts.desc = "Fix all imports"
-        keymap.set("n", "<leader>cI", "<cmd>TSToolsAddMissingImports<cr><cmd>TSToolsRemoveUnused<cr>", opts)
+        keymap.set("n", "<leader>cI", "<cmd>TSToolsAddMissingImports sync<cr><cmd>TSToolsRemoveUnused sync<cr>", opts)
 
         opts.desc = "Add missing imports"
-        keymap.set("n", "<leader>ci", "<cmd>TSToolsAddMissingImports<cr>", opts)
+        keymap.set("n", "<leader>ci", "<cmd>TSToolsAddMissingImports sync<cr>", opts)
 
         opts.desc = "Fix all"
         keymap.set("n", "<leader>cF", "<cmd>LspEslintFixAll<cr>", opts)

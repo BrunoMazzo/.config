@@ -90,9 +90,9 @@ return {
       map("n", "<leader>hq", gs.setqflist, "Quickfix List")
 
       -- Toggles
-      map("n", "<leader>tb", gs.toggle_current_line_blame, "Toggle Blame")
-      map("n", "<leader>td", gs.toggle_deleted, "Toggle Deleted")
-      map("n", "<leader>tw", gs.toggle_word_diff, "Toggle Word Diff")
+      -- map("n", "<leader>tb", gs.toggle_current_line_blame, "Toggle Blame")
+      -- map("n", "<leader>td", gs.toggle_deleted, "Toggle Deleted")
+      -- map("n", "<leader>tw", gs.toggle_word_diff, "Toggle Word Diff")
 
       -- Text object
       map({ "o", "x" }, "ih", gs.select_hunk, "Select Hunk")
