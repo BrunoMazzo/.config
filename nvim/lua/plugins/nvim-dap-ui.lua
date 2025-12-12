@@ -3,8 +3,8 @@ return {
   dependencies = { "nvim-neotest/nvim-nio" },
   -- stylua: ignore
   keys = {
-    { "<leader>Du", function() require("dapui").toggle({ }) end, desc = "Dap UI" },
-    { "<leader>De", function() require("dapui").eval() end, desc = "Eval", mode = {"n", "v"} },
+    { "<leader>du", function() require("dapui").toggle({ }) end, desc = "Dap UI" },
+    { "<leader>de", function() require("dapui").eval() end, desc = "Eval", mode = {"n", "v"} },
   },
   opts = {},
   config = function(_, opts)

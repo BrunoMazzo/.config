@@ -3,7 +3,19 @@ return {
   event = "VeryLazy",
   -- enable = false,
   ---@type Flash.Config
-  opts = {},
+  opts = {
+    exclude = {
+      "notify",
+      "cmp_menu",
+      "noice",
+      "flash_prompt",
+      "OverseerList",
+      function(win)
+        -- exclude non-focusable windows
+        return not vim.api.nvim_win_get_config(win).focusable
+      end,
+    },
+  },
   -- stylua: ignore
   keys = {
     { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },

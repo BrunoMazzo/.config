@@ -62,6 +62,8 @@ return {
         ["l"] = "toggle_node",
         ["h"] = "close_node",
         ["<space>"] = "none",
+        ["<cr>"] = "open",
+        ["t"] = "open_tabnew",
         ["Y"] = {
           function(state)
             local node = state.tree:get_node()

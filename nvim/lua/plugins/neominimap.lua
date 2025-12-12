@@ -44,6 +44,14 @@ return ---@module "neominimap.config.meta"
     vim.g.neominimap = {
       auto_enable = true,
       y_multiplier = 4,
+      exclude_buftypes = {
+        "acwrite",
+        "nofile",
+        "nowrite",
+        "quickfix",
+        "terminal",
+        "prompt",
+      },
     }
   end,
 }
