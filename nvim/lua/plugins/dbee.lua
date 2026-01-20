@@ -1,6 +1,7 @@
 return {
   "kndndrj/nvim-dbee",
   event = {"BufEnter"},
+  enabled = false,
   dependencies = {
     "MunifTanjim/nui.nvim",
   },

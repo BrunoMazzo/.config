@@ -6,6 +6,12 @@ return {
   },
   config = function()
     vim.g.opencode_opts = {
+      provider = {
+        enabled = "tmux",
+        tmux = {
+          options = "-h",
+        },
+      },
       -- Your configuration, if any — see `lua/opencode/config.lua`
     }
 

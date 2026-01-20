@@ -28,8 +28,8 @@ return {
     })
     --
     -- Using Typescript tools for the LSP management
-    -- vim.lsp.enable("ts_ls")
-    -- vim.lsp.enable("eslint")
+    vim.lsp.enable("tsgo")
+    vim.lsp.enable("eslint")
     --
     -- lspconfig.sourcekit.setup({
     --   cmd = { vim.trim(vim.fn.system("xcrun -f sourcekit-lsp")), },
