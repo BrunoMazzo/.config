@@ -3,8 +3,8 @@ return {
   config = function()
     vim.lsp.inlay_hint.enable(true)
 
-    -- vim.lsp.enable("gopls")
     vim.lsp.config("gopls", {
+      filetypes = { "go", "gomod", "gowork", "gotmpl" },
       settings = {
         gopls = {
           buildFlags = { "-tags=integration" },
@@ -26,6 +26,13 @@ return {
         },
       },
     })
+    vim.lsp.enable("gopls")
+    
+    vim.lsp.config("html", {
+      filetypes = { "html", "gotmpl" },
+    })
+    vim.lsp.enable("html")
+
     --
     -- Using Typescript tools for the LSP management
     vim.lsp.enable("tsgo")

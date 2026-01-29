@@ -8,13 +8,16 @@ return {
       { "<c-space>", desc = "Increment Selection" },
       { "<bs>", desc = "Decrement Selection", mode = "x" },
     },
-    init = function()
+    config = function()
       local treesitter = require("nvim-treesitter")
       treesitter
         .install({
           "bash",
           "c",
+          "css",
           "diff",
+          "go",
+          "gotmpl",
           "html",
           "javascript",
           "jsdoc",
@@ -41,6 +44,7 @@ return {
         :wait(300000)
 
       -- vim.treesitter.language.register("tsx", { "typescriptreact" })
+      vim.treesitter.language.register("gotmpl", { "gohtml", "gotmpl" })
 
       -- auto-start highlights & indentation
       vim.api.nvim_create_autocmd("FileType", {

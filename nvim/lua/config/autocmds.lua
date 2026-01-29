@@ -73,3 +73,40 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
   end,
 })
 
+-- Detect gohtml files
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+  group = augroup("gohtml_filetype"),
+  pattern = { "*.gohtml", "*.gotmpl" },
+  callback = function()
+    vim.bo.filetype = "gotmpl"
+  end,
+})
+
+-- Disable semantic tokens for gotmpl files
+vim.api.nvim_create_autocmd("LspAttach", {
+  group = augroup("disable_gotmpl_semantic"),
+  callback = function(args)
+    local bufnr = args.buf
+    local client_id = args.data.client_id
+    local client = vim.lsp.get_client_by_id(client_id)
+    if vim.bo[bufnr].filetype == "gotmpl" and client then
+      vim.lsp.semantic_tokens.stop(bufnr, client_id)
+      -- Disable document highlight (references highlighting)
+      client.server_capabilities.documentHighlightProvider = false
+    end
+  end,
+})
+
+-- Disable treesitter injection region highlighting
+vim.api.nvim_create_autocmd("ColorScheme", {
+  group = augroup("disable_injection_highlight"),
+  callback = function()
+    vim.api.nvim_set_hl(0, "@injection.content", {})
+    vim.api.nvim_set_hl(0, "@text.literal", {})
+    vim.api.nvim_set_hl(0, "TreesitterContext", {})
+  end,
+})
+vim.api.nvim_set_hl(0, "@injection.content", {})
+vim.api.nvim_set_hl(0, "@text.literal", {})
+vim.api.nvim_set_hl(0, "TreesitterContext", {})
+
