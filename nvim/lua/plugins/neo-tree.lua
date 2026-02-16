@@ -74,9 +74,9 @@ return {
         },
         ["O"] = {
           function(state)
-            require("lazy.util").open(state.tree:get_node().path, { system = true })
+            vim.fn.system({ "open", "-R", state.tree:get_node().path })
           end,
-          desc = "Open with System Application",
+          desc = "Open in Finder",
         },
         ["P"] = { "toggle_preview", config = { use_float = false } },
       },

@@ -100,3 +100,19 @@ vim.api.nvim_set_hl(0, 'CursorLineNr', { fg = '#FFFFFF', bold = true }) -- White
 -- vim.api.nvim_set_hl(0, 'LineNrAbove', { fg = '#51B3EC' }) -- A light blue
 -- vim.api.nvim_set_hl(0, 'LineNrBelow', { fg = '#FB508F' }) -- A pinkish red
 
+vim.opt.guicursor = "n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50,t:ver25,a:blinkwait700-blinkoff400-blinkon250,sm:block-blinkwait175-blinkoff150-blinkon175"
+
+vim.api.nvim_create_autocmd("TermOpen", {
+  callback = function()
+    vim.wo.statuscolumn = ""
+    vim.api.nvim_command("startinsert")
+  end,
+})
+
+vim.keymap.set('t', '<Esc>', '<C-\\><C-n>', { noremap = true })
+vim.keymap.set('t', '<C-[>', '<C-\\><C-n>', { noremap = true })
+
+
+
+
+
