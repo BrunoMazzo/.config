@@ -52,6 +52,27 @@ return ---@module "neominimap.config.meta"
         "terminal",
         "prompt",
       },
+      float = {
+        window_border = vim.fn.has("nvim-0.11") == 1 and vim.o.winborder or "single",
+      },
+      winopt = function(opt, winid)
+        opt.winfixwidth = false
+        vim.schedule(function()
+          if not vim.api.nvim_win_is_valid(winid) then
+            return
+          end
+          local window_map = require("neominimap.window.float.window_map")
+          local mwinid = window_map.get_minimap_winid(winid)
+          if not mwinid or not vim.api.nvim_win_is_valid(mwinid) then
+            return
+          end
+          local src_width = vim.api.nvim_win_get_width(winid)
+          local new_width = math.max(1, src_width - 20)
+          local cfg = vim.api.nvim_win_get_config(mwinid)
+          cfg.width = new_width
+          vim.api.nvim_win_set_config(mwinid, cfg)
+        end)
+      end,
     }
   end,
 }

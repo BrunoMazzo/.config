@@ -53,6 +53,9 @@ return {
       bind_to_cwd = false,
       follow_current_file = { enabled = true },
       use_libuv_file_watcher = true,
+      filtered_items = {
+        hide_hidden = false,
+      },
     },
     window = {
       position = "current",
@@ -102,7 +105,7 @@ return {
       },
       ["tsx"] = {
         pattern = "(.*)%.tsx$",
-        files = { "%1*.test.*", "%1*.spec.*" },
+        files = { "%1.test.*", "%1*.spec.*" },
       },
       ["ts"] = {
         pattern = "(.*)%.ts$",

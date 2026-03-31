@@ -197,3 +197,7 @@ map("n", "<C-u>", "<C-u>zz")
 
 map({"n", "v"}, "<leader>d","\"_d")
 map("v", "<leader>p","\"_dP")
+
+-- remap macro recording from q to Q
+map("n", "q", "<Nop>")
+map("n", "Q", "q")
