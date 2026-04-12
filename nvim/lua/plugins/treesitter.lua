@@ -1,112 +1,61 @@
-return {
-  {
-    "nvim-treesitter/nvim-treesitter",
-    build = ":TSUpdate",
-    branch = "main",
-    lazy = false,
-    keys = {
-      { "<c-space>", desc = "Increment Selection" },
-      { "<bs>", desc = "Decrement Selection", mode = "x" },
-    },
-    config = function()
-      local treesitter = require("nvim-treesitter")
-      treesitter
-        .install({
-          "bash",
-          "c",
-          "css",
-          "diff",
-          "go",
-          "gotmpl",
-          "html",
-          "javascript",
-          "jsdoc",
-          "json",
-          "jsx",
-          "lua",
-          "luadoc",
-          "luap",
-          "markdown",
-          "markdown_inline",
-          "printf",
-          "python",
-          "query",
-          "regex",
-          "toml",
-          "tsx",
-          "typescript",
-          "swift",
-          "vim",
-          "vimdoc",
-          "xml",
-          "yaml",
-        })
-        :wait(300000)
+-- Treesitter configuration
+-- vim.pack version - no lazy loading
 
-      -- vim.treesitter.language.register("tsx", { "typescriptreact" })
-      vim.treesitter.language.register("gotmpl", { "gohtml", "gotmpl" })
+-- Add the plugin
+vim.pack.add({"https://github.com/nvim-treesitter/nvim-treesitter.git"})
 
-      -- auto-start highlights & indentation
-      vim.api.nvim_create_autocmd("FileType", {
-        desc = "User: enable treesitter highlighting",
-        callback = function(ctx)
-          -- highlights
-          local hasStarted = pcall(vim.treesitter.start, ctx.buf) -- errors for filetypes with no parser
+-- Configure the plugin
+local treesitter = require("nvim-treesitter")
 
-          -- indent
-          local dontUseTreesitterIndent = { "bash", "zsh", "markdown", "javascript" }
-          if hasStarted and not vim.list_contains(dontUseTreesitterIndent, ctx.match) then
-            vim.bo[ctx.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-          end
-        end,
-      })
-    end,
-  },
-  {
-    "nvim-treesitter/nvim-treesitter-textobjects",
-    dependencies = { "nvim-treesitter/nvim-treesitter" },
-    event = "VeryLazy",
-    enabled = false,
-    config = function()
-      -- When in diff mode, we want to use the default
-      -- vim text objects c & C instead of the treesitter ones.
-      local move = require("nvim-treesitter.textobjects.move") ---@type table<string,fun(...)>
-      local configs = require("nvim-treesitter.configs")
-      for name, fn in pairs(move) do
-        if name:find("goto") == 1 then
-          move[name] = function(q, ...)
-            if vim.wo.diff then
-              local config = configs.get_module("textobjects.move")[name] ---@type table<string,string>
-              for key, query in pairs(config or {}) do
-                if q == query and key:find("[%]%[][cC]") then
-                  vim.cmd("normal! " .. key)
-                  return
-                end
-              end
-            end
-            return fn(q, ...)
-          end
-        end
-      end
-    end,
-  },
-  {
-    "nvim-treesitter/nvim-treesitter-context",
-    enabled = true,
-    opts = function()
-      local tsc = require("treesitter-context")
-      Snacks.toggle({
-        name = "Treesitter Context",
-        get = tsc.enabled,
-        set = function(state)
-          if state then
-            tsc.enable()
-          else
-            tsc.disable()
-          end
-        end,
-      }):map("<leader>ut")
-      return { mode = "cursor", max_lines = 3 }
-    end,
-  },
+-- Install parsers
+local parsers = {
+  "bash",
+  "c",
+  "css",
+  "diff",
+  "go",
+  "gotmpl",
+  "html",
+  "javascript",
+  "jsdoc",
+  "json",
+  "jsx",
+  "lua",
+  "luadoc",
+  "luap",
+  "markdown",
+  "markdown_inline",
+  "printf",
+  "python",
+  "query",
+  "regex",
+  "toml",
+  "tsx",
+  "typescript",
+  "swift",
+  "vim",
+  "vimdoc",
+  "xml",
+  "yaml",
 }
+
+-- Install parsers asynchronously
+treesitter.install(parsers)
+
+-- Register custom filetypes
+vim.treesitter.language.register("gotmpl", { "gohtml", "gotmpl" })
+
+-- Auto-start highlights & indentation
+vim.api.nvim_create_autocmd("FileType", {
+  desc = "User: enable treesitter highlighting",
+  callback = function(ctx)
+    -- highlights
+    local hasStarted = pcall(vim.treesitter.start, ctx.buf)
+
+    -- indent
+    local dontUseTreesitterIndent = { "bash", "zsh", "markdown", "javascript" }
+    if hasStarted and not vim.list_contains(dontUseTreesitterIndent, ctx.match) then
+      vim.bo[ctx.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+    end
+  end,
+})

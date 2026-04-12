@@ -1,11 +1,25 @@
-return {
-  "folke/tokyonight.nvim",
-  lazy = false,
-  priority = 1000,
-  opts = {
-    style = "night",
+-- TokyoNight colorscheme configuration
+-- vim.pack version - no lazy loading
+
+-- Add the plugin
+vim.pack.add({"https://github.com/folke/tokyonight.nvim.git"})
+
+-- Configure the plugin
+require("tokyonight").setup({
+  style = "night",
+  transparent = false,
+  terminal_colors = true,
+  styles = {
+    comments = { italic = true },
+    keywords = { italic = true },
+    functions = {},
+    variables = {},
+    sidebars = "dark",
+    floats = "dark",
   },
-  config = function()
-    -- vim.cmd[[colorscheme tokyonight-night]]
-  end,
-}
+  sidebars = { "qf", "help", "neo-tree", "terminal", "packer" },
+  day_brightness = 0.3,
+  hide_inactive_statusline = false,
+  dim_inactive = false,
+  lualine_bold = false,
+})

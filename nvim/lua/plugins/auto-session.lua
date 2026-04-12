@@ -1,17 +1,17 @@
-return {
-  "rmagatti/auto-session",
-  enabled = false,
-  config = function()
-    local auto_session = require("auto-session")
+-- Auto-session configuration
+-- vim.pack version - no lazy loading
+-- NOTE: Currently disabled
 
-    auto_session.setup({
-      auto_save = true,
-      auto_restore = true,
-    })
+-- Add the plugin (even if disabled, it's good to have it available)
+vim.pack.add({"https://github.com/rmagatti/auto-session.git"})
 
-    local keymap = vim.keymap
+-- Uncomment to enable auto-session
+--[[
+require("auto-session").setup({
+  auto_save = true,
+  auto_restore = true,
+})
 
-    keymap.set("n", "<leader>wr", "<cmd>SessionRestore<CR>", { desc = "Restore session for cwd" }) -- restore last workspace session for current directory
-    keymap.set("n", "<leader>ws", "<cmd>SessionSave<CR>", { desc = "Save session for auto session root dir" }) -- save workspace session for current working directory
-  end,
-}
+vim.keymap.set("n", "<leader>wr", "<cmd>SessionRestore<CR>", { desc = "Restore session for cwd" })
+vim.keymap.set("n", "<leader>ws", "<cmd>SessionSave<CR>", { desc = "Save session for auto session root dir" })
+--]]

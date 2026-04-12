@@ -1,148 +1,173 @@
-return {
-  "neovim/nvim-lspconfig",
-  config = function()
-    vim.lsp.inlay_hint.enable(true)
+-- nvim-lspconfig configuration
+-- vim.pack version - no lazy loading
 
-    vim.lsp.config("gopls", {
-      filetypes = { "go", "gomod", "gowork", "gotmpl" },
-      settings = {
-        gopls = {
-          buildFlags = { "-tags=integration" },
-          analyses = {
-            unusedparams = true,
-            unusedwrite = true,
-            shadow = true,
-          },
-          staticcheck = true,
-          hints = {
-            rangeVariableTypes = true,
-            parameterNames = true,
-            constantValues = true,
-            assignVariableTypes = true,
-            compositeLiteralFields = true,
-            compositeLiteralTypes = true,
-            functionTypeParameters = true,
-          },
-        },
+-- Add the plugin
+vim.pack.add({ "https://github.com/neovim/nvim-lspconfig.git" })
+
+-- Enable inlay hints
+vim.lsp.inlay_hint.enable(true)
+
+-- Get blink.cmp capabilities
+local capabilities = nil
+local ok, blink = pcall(require, "blink.cmp")
+if ok then
+  capabilities = blink.get_lsp_capabilities()
+end
+
+-- Configure LSP servers
+vim.lsp.config("tsgo", {
+  capabilities = capabilities,
+})
+vim.lsp.enable("tsgo")
+
+vim.lsp.config("eslint", {
+  capabilities = capabilities,
+})
+vim.lsp.enable("eslint")
+
+-- Gopls configuration
+vim.lsp.config("gopls", {
+  capabilities = capabilities,
+  filetypes = { "go", "gomod", "gowork", "gotmpl" },
+  settings = {
+    gopls = {
+      buildFlags = { "-tags=integration" },
+      analyses = {
+        unusedparams = true,
+        unusedwrite = true,
+        shadow = true,
       },
-    })
-    vim.lsp.enable("gopls")
-    
-    vim.lsp.config("html", {
-      filetypes = { "html", "gotmpl" },
-    })
-    vim.lsp.enable("html")
+      staticcheck = true,
+      hints = {
+        rangeVariableTypes = true,
+        parameterNames = true,
+        constantValues = true,
+        assignVariableTypes = true,
+        compositeLiteralFields = true,
+        compositeLiteralTypes = true,
+        functionTypeParameters = true,
+      },
+    },
+  },
+})
+vim.lsp.enable("gopls")
 
-    --
-    -- Using Typescript tools for the LSP management
-    vim.lsp.enable("tsgo")
-    vim.lsp.enable("eslint")
-    --
-    -- lspconfig.sourcekit.setup({
-    --   cmd = { vim.trim(vim.fn.system("xcrun -f sourcekit-lsp")), },
-    --   capabilities = capabilities,
-    --   on_init = function(client)
-    --     -- HACK: to fix some issues with LSP
-    --     -- more details: https://github.com/neovim/neovim/issues/19237#issuecomment-2237037154
-    --     client.offset_encoding = "utf-8"
-    --   end,
-    -- })
-    -- mason_lspconfig.setup_handlers({
-    --   -- default handler for installed servers
-    --   function(server_name)
-    --     lspconfig[server_name].setup({
-    --       capabilities = capabilities,
-    --     })
-    --   end,
-    -- })
+-- HTML configuration
+vim.lsp.config("html", {
+  capabilities = capabilities,
+  filetypes = { "html", "gotmpl" },
+})
 
-    local keymap = vim.keymap
-    vim.api.nvim_create_autocmd("LspAttach", {
-      group = vim.api.nvim_create_augroup("UserLspConfig", {}),
-      callback = function(ev)
-        -- Buffer local mappings.
-        -- See `:help vim.lsp.*` for documentation on any of the below functions
-        local opts = { buffer = ev.buf, silent = true }
+vim.lsp.enable("lua")
 
-        -- set keybinds
-        opts.desc = "Show LSP references"
-        keymap.set("n", "gr", "<cmd>FzfLua lsp_references jump1=true ignore_current_line=true<cr>", opts) -- show definition, references
+-- LSP attach keymaps
+local keymap = vim.keymap
+vim.api.nvim_create_autocmd("LspAttach", {
+  group = vim.api.nvim_create_augroup("UserLspConfig", {}),
+  callback = function(ev)
+    local opts = { buffer = ev.buf, silent = true }
 
-        opts.desc = "Go to declaration"
-        keymap.set("n", "gD", "<cmd>FzfLua lsp_declarations jump1=true<cr>", opts) -- go to declaration
+    opts.desc = "Show LSP references"
+    keymap.set("n", "gr", "<cmd>FzfLua lsp_references jump1=true ignore_current_line=true<cr>", opts)
 
-        opts.desc = "Show LSP definitions"
-        keymap.set("n", "gd", "<cmd>FzfLua lsp_definitions jump1=true ignore_current_line=true<cr>", opts) -- show lsp definitions
+    opts.desc = "Go to declaration"
+    keymap.set("n", "gD", "<cmd>FzfLua lsp_declarations jump1=true<cr>", opts)
 
-        opts.desc = "Show LSP implementations"
-        keymap.set("n", "gi", "<cmd>FzfLua lsp_implementations jump1=true ignore_current_line=true<cr>", opts) -- show lsp implementations
+    opts.desc = "Show LSP definitions"
+    keymap.set("n", "gd", "<cmd>FzfLua lsp_definitions jump1=true ignore_current_line=true<cr>", opts)
 
-        opts.desc = "Show LSP type definitions"
-        keymap.set("n", "gy", "<cmd>FzfLua lsp_typedefs jump1=true ignore_current_line=true<cr>", opts) -- show lsp type definitions
+    opts.desc = "Show LSP implementations"
+    keymap.set("n", "gi", "<cmd>FzfLua lsp_implementations jump1=true ignore_current_line=true<cr>", opts)
 
-        opts.desc = "See available code actions"
-        keymap.set({ "n", "v" }, "<leader>ca", "<cmd>FzfLua lsp_code_actions<cr>", opts) -- see available code actions, in visual mode will apply to selection
+    opts.desc = "Show LSP type definitions"
+    keymap.set("n", "gy", "<cmd>FzfLua lsp_typedefs jump1=true ignore_current_line=true<cr>", opts)
 
-        opts.desc = "Smart rename"
-        keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts) -- smart rename
+    opts.desc = "See available code actions"
+    keymap.set({ "n", "v" }, "<leader>ca", "<cmd>FzfLua lsp_code_actions<cr>", opts)
 
-        opts.desc = "Show line diagnostics"
-        keymap.set("n", "<leader>d", vim.diagnostic.open_float, opts) -- show diagnostics for line
+    opts.desc = "Smart rename"
+    keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
 
-        opts.desc = "Go to previous diagnostic"
-        keymap.set("n", "[d", function()
-          vim.diagnostic.jump({ count = -1, float = true })
-        end, opts) -- jump to previous diagnostic in buffer
+    opts.desc = "Show line diagnostics"
+    keymap.set("n", "<leader>d", vim.diagnostic.open_float, opts)
 
-        opts.desc = "Go to next diagnostic"
-        keymap.set("n", "]d", function()
-          vim.diagnostic.jump({ count = 1, float = true })
-        end, opts) -- jump to next diagnostic in buffer
+    opts.desc = "Go to previous diagnostic"
+    keymap.set("n", "[d", function()
+      vim.diagnostic.jump({ count = -1, float = true })
+    end, opts)
 
-        opts.desc = "Show documentation for what is under cursor"
-        keymap.set("n", "K", vim.lsp.buf.hover, opts) -- show documentation for what is under cursor
+    opts.desc = "Go to next diagnostic"
+    keymap.set("n", "]d", function()
+      vim.diagnostic.jump({ count = 1, float = true })
+    end, opts)
 
-        opts.desc = "Restart LSP"
-        keymap.set("n", "<leader>rs", ":LspRestart<CR>", opts) -- mapping to restart lsp if necessary
-      end,
-    })
+    opts.desc = "Show documentation for what is under cursor"
+    keymap.set("n", "K", vim.lsp.buf.hover, opts)
 
-    vim.api.nvim_create_autocmd("LspAttach", {
-      pattern = { "*.ts", "*.tsx" },
-      group = vim.api.nvim_create_augroup("UserLspConfig-ts_ls", {}),
-      callback = function(ev)
-        -- Buffer local mappings.
-        -- See `:help vim.lsp.*` for documentation on any of the below functions
-        local opts = { buffer = ev.buf, silent = true }
+    opts.desc = "Restart LSP"
+    keymap.set("n", "<leader>rs", ":LspRestart<CR>", opts)
+  end,
+})
 
-        -- set keybinds
-        opts.desc = "Organize imports"
-        keymap.set("n", "<leader>co", "<cmd>TSToolsOrganizeImports sync<cr>", opts)
+-- TypeScript specific keymaps
+vim.api.nvim_create_autocmd("LspAttach", {
+  pattern = { "*.ts", "*.tsx" },
+  group = vim.api.nvim_create_augroup("UserLspConfig-ts_ls", {}),
+  callback = function(ev)
+    local opts = { buffer = ev.buf, silent = true }
 
-        opts.desc = "Fix all imports"
-        keymap.set("n", "<leader>cI", "<cmd>TSToolsAddMissingImports sync<cr><cmd>TSToolsRemoveUnused sync<cr>", opts)
+    opts.desc = "Organize imports"
+    keymap.set("n", "<leader>co", function()
+      vim.lsp.buf.code_action({
+        context = {
+          only = { "source.organizeImports" },
+        },
+        apply = true,
+      })
+    end, opts)
 
-        opts.desc = "Add missing imports"
-        keymap.set("n", "<leader>ci", "<cmd>TSToolsAddMissingImports sync<cr>", opts)
+    opts.desc = "Fix all imports"
+    keymap.set("n", "<leader>cI", function()
+      vim.lsp.buf.code_action({
+        context = {
+          only = { "source.addMissingImports.ts" },
+        },
+        apply = true,
+      })
+      vim.lsp.buf.code_action({
+        context = {
+          only = { "source.removeUnusedImports.ts" },
+        },
+        apply = true,
+      })
+    end, opts)
 
-        opts.desc = "Fix all"
-        keymap.set("n", "<leader>cF", "<cmd>LspEslintFixAll<cr>", opts)
+    opts.desc = "Add missing imports"
+    keymap.set("n", "<leader>ci", function()
+      vim.lsp.buf.code_action({
+        context = {
+          only = { "source.addMissingImports.ts" },
+        },
+        apply = true,
+      })
+    end, opts)
 
-        -- Autocmd to fix ESLint errors on save
-        vim.api.nvim_create_autocmd("BufWritePre", {
-          buffer = ev.buf,
-          command = "LspEslintFixAll", -- Or a similar command provided by your ESLint LSP setup
-        })
-      end,
-    })
+    opts.desc = "Fix all"
+    keymap.set("n", "<leader>cF", "<cmd>LspEslintFixAll<cr>", opts)
 
-    -- Go auto import
+    -- Autocmd to fix ESLint errors on save
     vim.api.nvim_create_autocmd("BufWritePre", {
-      pattern = "*.go",
-      callback = function()
-        vim.cmd("GoImports")
-        vim.lsp.buf.format({ async = false })
-      end,
+      buffer = ev.buf,
+      command = "LspEslintFixAll",
     })
   end,
-}
+})
+
+-- Go auto import
+vim.api.nvim_create_autocmd("BufWritePre", {
+  pattern = "*.go",
+  callback = function()
+    vim.cmd("GoImports")
+    vim.lsp.buf.format({ async = false })
+  end,
+})

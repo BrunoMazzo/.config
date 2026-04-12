@@ -1,86 +1,56 @@
-return {
-  "NickvanDyke/opencode.nvim",
-  version = "*",
-  dependencies = {
-    {
-      -- `snacks.nvim` integration is recommended, but optional
-      ---@module "snacks" <- Loads `snacks.nvim` types for configuration intellisense
-      "folke/snacks.nvim",
-      optional = true,
-      opts = {
-        input = {}, -- Enhances `ask()`
-        picker = { -- Enhances `select()`
-          actions = {
-            opencode_send = function(...)
-              return require("opencode").snacks_picker_send(...)
-            end,
-          },
-          win = {
-            input = {
-              keys = {
-                ["<a-a>"] = { "opencode_send", mode = { "n", "i" } },
-              },
-            },
-          },
-        },
-      },
-    },
-  },
-  config = function()
-    ---@type opencode.Opts
-    -- vim.g.opencode_opts = {
-    -- provider = {
-    --   enabled = "tmux",
-    --   tmux = {
-    --     options = "-h",
-    --   },
-    -- },
-    -- Your configuration, if any — see `lua/opencode/config.lua`
-    -- }
+-- opencode.nvim configuration
+-- Integrates the opencode AI assistant with Neovim
+-- https://github.com/nickjvandyke/opencode.nvim
 
-    -- Required for `opts.auto_reload`
-    vim.o.autoread = true
+-- Add the plugin
+vim.pack.add({ "https://github.com/nickjvandyke/opencode.nvim.git" })
 
-    -- Recommended/example keymaps
-    -- Recommended/example keymaps
-    vim.keymap.set({ "n", "x" }, "<leader>oa", function()
-      require("opencode").ask("@this: ", { submit = true })
-    end, { desc = "Ask about this" })
-    vim.keymap.set({ "n", "x" }, "<leader>o+", function()
-      require("opencode").prompt("@this")
-    end, { desc = "Add this" })
-    vim.keymap.set({ "n", "x" }, "<leader>oe", function()
-      require("opencode").prompt("Explain @this and its context", { submit = true })
-    end, { desc = "Explain this" })
-    vim.keymap.set({ "n", "x" }, "<leader>os", function()
-      require("opencode").select()
-    end, { desc = "Select prompt" })
-    vim.keymap.set("n", "<leader>ot", function()
-      require("opencode").toggle()
-    end, { desc = "Toggle embedded" })
-    vim.keymap.set("n", "<leader>on", function()
-      require("opencode").command("session.new")
-    end, { desc = "New session" })
-    vim.keymap.set("n", "<leader>oi", function()
-      require("opencode").command("session.interrupt")
-    end, { desc = "Interrupt session" })
-    vim.keymap.set("n", "<S-C-u>", function()
-      require("opencode").command("messages_half_page_up")
-    end, { desc = "Messages half page up" })
-    vim.keymap.set("n", "<S-C-d>", function()
-      require("opencode").command("messages_half_page_down")
-    end, { desc = "Messages half page down" }) -- Custom commands
-    vim.keymap.set("n", "<leader>oc", function()
-      require("opencode").prompt(
-        "Look at the branch name to get the Linear ticket, and then use the commit skill to commit the staged code",
-        { submit = true }
-      )
-    end, { desc = "Commit changes" })
-    vim.keymap.set("n", "<leader>oC", function()
-      require("opencode").prompt(
-        'Look at the branch name to get the Linear ticket, then commit any staged changes we have using the commit skill. Rebase the current branch with master and use the pr skill to create a PR. After it, using the google workspace mcp, send a message to the channel "Performance Team Chat" (spaces/AAQAPypdP5c) with the link and a one line description.',
-        { submit = true }
-      )
-    end, { desc = "Create an PR" })
-  end,
+-- Configuration
+---@type opencode.Opts
+vim.g.opencode_opts = {
+  -- Default configuration - check lua/opencode/config.lua for all options
+  -- You can customize here if needed
 }
+
+-- Required for opts.events.reload
+vim.o.autoread = true
+
+-- Set up keymaps
+-- Ask opencode (Ctrl+a)
+vim.keymap.set({ "n", "x" }, "<C-a>", function()
+  require("opencode").ask("@this: ", { submit = true })
+end, { desc = "Ask opencode…" })
+
+-- Execute opencode action (Ctrl+x)
+vim.keymap.set({ "n", "x" }, "<C-x>", function()
+  require("opencode").select()
+end, { desc = "Execute opencode action…" })
+
+-- Toggle opencode terminal (Ctrl+.)
+vim.keymap.set({ "n", "t" }, "<C-.>", function()
+  require("opencode").toggle()
+end, { desc = "Toggle opencode" })
+
+-- Operator mode - add range to opencode (go)
+vim.keymap.set({ "n", "x" }, "go", function()
+  return require("opencode").operator("@this ")
+end, { desc = "Add range to opencode", expr = true })
+
+-- Operator mode - add line to opencode (goo)
+vim.keymap.set("n", "goo", function()
+  return require("opencode").operator("@this ") .. "_"
+end, { desc = "Add line to opencode", expr = true })
+
+-- Scroll opencode up
+vim.keymap.set("n", "<S-C-u>", function()
+  require("opencode").command("session.half.page.up")
+end, { desc = "Scroll opencode up" })
+
+-- Scroll opencode down
+vim.keymap.set("n", "<S-C-d>", function()
+  require("opencode").command("session.half.page.down")
+end, { desc = "Scroll opencode down" })
+
+-- Optional: Remap increment/decrement since <C-a> and <C-x> are used
+vim.keymap.set("n", "+", "<C-a>", { desc = "Increment under cursor", noremap = true })
+vim.keymap.set("n", "-", "<C-x>", { desc = "Decrement under cursor", noremap = true })

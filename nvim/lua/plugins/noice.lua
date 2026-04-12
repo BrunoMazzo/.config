@@ -1,56 +1,76 @@
-return {
-  "folke/noice.nvim",
-  event = "VeryLazy",
-  -- enabled = false,
-  opts = {
-    lsp = {
-      progress = {
-        enabled = false,
-      },
-      override = {
-        ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-        ["vim.lsp.util.stylize_markdown"] = true,
-        ["cmp.entry.get_documentation"] = true,
-      },
+-- Noice configuration
+-- vim.pack version - no lazy loading
+
+-- Add dependency first
+vim.pack.add({"https://github.com/rcarriga/nvim-notify.git"})
+
+-- Add the main plugin
+vim.pack.add({"https://github.com/folke/noice.nvim.git"})
+
+-- Configure the plugin
+require("noice").setup({
+  lsp = {
+    progress = {
+      enabled = false,
     },
-    routes = {
-      {
-        filter = {
-          event = "msg_show",
-          any = {
-            { find = "%d+L, %d+B" },
-            { find = "; after #%d+" },
-            { find = "; before #%d+" },
-          },
+    override = {
+      ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+      ["vim.lsp.util.stylize_markdown"] = true,
+      ["cmp.entry.get_documentation"] = true,
+    },
+  },
+  routes = {
+    {
+      filter = {
+        event = "msg_show",
+        any = {
+          { find = "%d+L, %d+B" },
+          { find = "; after #%d+" },
+          { find = "; before #%d+" },
         },
-        view = "mini",
       },
-    },
-    presets = {
-      -- bottom_search = true,
-      command_palette = true,
-      long_message_to_split = true,
+      view = "mini",
     },
   },
-  -- stylua: ignore
-  keys = {
-    { "<leader>sn", "", desc = "+noice"},
-    { "<S-Enter>", function() require("noice").redirect(vim.fn.getcmdline()) end, mode = "c", desc = "Redirect Cmdline" },
-    { "<leader>snl", function() require("noice").cmd("last") end, desc = "Noice Last Message" },
-    { "<leader>snh", function() require("noice").cmd("history") end, desc = "Noice History" },
-    { "<leader>sna", function() require("noice").cmd("all") end, desc = "Noice All" },
-    { "<leader>snd", function() require("noice").cmd("dismiss") end, desc = "Dismiss All" },
-    { "<leader>snt", function() require("noice").cmd("pick") end, desc = "Noice Picker (Telescope/FzfLua)" },
-    { "<c-f>", function() if not require("noice.lsp").scroll(4) then return "<c-f>" end end, silent = true, expr = true, desc = "Scroll Forward", mode = {"i", "n", "s"} },
-    { "<c-b>", function() if not require("noice.lsp").scroll(-4) then return "<c-b>" end end, silent = true, expr = true, desc = "Scroll Backward", mode = {"i", "n", "s"}},
+  presets = {
+    command_palette = true,
+    long_message_to_split = true,
   },
-  config = function(_, opts)
-    -- HACK: noice shows messages from before it was enabled,
-    -- but this is not ideal when Lazy is installing plugins,
-    -- so clear the messages in this case.
-    if vim.o.filetype == "lazy" then
-      vim.cmd([[messages clear]])
-    end
-    require("noice").setup(opts)
-  end,
-}
+})
+
+-- Keymaps for noice
+vim.keymap.set("n", "<leader>sn", "", { desc = "+noice" })
+vim.keymap.set("c", "<S-Enter>", function()
+  require("noice").redirect(vim.fn.getcmdline())
+end, { desc = "Redirect Cmdline" })
+vim.keymap.set("n", "<leader>snl", function()
+  require("noice").cmd("last")
+end, { desc = "Noice Last Message" })
+vim.keymap.set("n", "<leader>snh", function()
+  require("noice").cmd("history")
+end, { desc = "Noice History" })
+vim.keymap.set("n", "<leader>sna", function()
+  require("noice").cmd("all")
+end, { desc = "Noice All" })
+vim.keymap.set("n", "<leader>snd", function()
+  require("noice").cmd("dismiss")
+end, { desc = "Dismiss All" })
+vim.keymap.set("n", "<leader>snt", function()
+  require("noice").cmd("pick")
+end, { desc = "Noice Picker" })
+
+-- Scroll mappings
+local function scroll_forward()
+  if not require("noice.lsp").scroll(4) then
+    return "<c-f>"
+  end
+end
+
+local function scroll_backward()
+  if not require("noice.lsp").scroll(-4) then
+    return "<c-b>"
+  end
+end
+
+vim.keymap.set({ "i", "n", "s" }, "<c-f>", scroll_forward, { silent = true, expr = true, desc = "Scroll Forward" })
+vim.keymap.set({ "i", "n", "s" }, "<c-b>", scroll_backward, { silent = true, expr = true, desc = "Scroll Backward" })

@@ -1,41 +1,74 @@
-return {
-  "saghen/blink.cmp",
-  -- optional: provides snippets for the snippet source
-  dependencies = { "rafamadriz/friendly-snippets", "Kaiser-Yang/blink-cmp-avante" },
-  -- use a release tag to download pre-built binaries
-  version = "*",
-  -- AND/OR build from source, requires nightly: https://rust-lang.github.io/rustup/concepts/channels.html#working-with-nightly-rust
-  -- build = 'cargo build --release',
-  -- If you use nix, you can build from source using latest nightly rust with:
-  -- build = 'nix run .#build-plugin',
+-- Blink.cmp configuration
+-- vim.pack version - no lazy loading
 
-  config = function()
-    require("blink.cmp").setup({
-      -- keymap = {
-      --   preset = "enter",
-      --   ["<S-Tab>"] = { "select_prev", "fallback" },
-      --   ["<Tab>"] = { "select_next", "fallback" },
-      -- },
-      completion = {
-        documentation = {
-          auto_show = true,
-          auto_show_delay_ms = 500,
-        },
-        menu = {
-          draw = {
-            columns = { { "label", "label_description", gap = 1 }, { "kind_icon", "kind" }, { "source_name" } },
-          },
-        },
+-- Add the plugin with version pin
+vim.pack.add({
+  {
+    src = "https://github.com/saghen/blink.cmp",
+    version = vim.version.range("1"),
+  },
+})
+-- Configure the plugin
+require("blink.cmp").setup({
+  fuzzy = {
+    implementation = "prefer_rust_with_warning",
+  },
+
+  -- Keymap configuration
+  keymap = {
+    preset = "default",
+    ["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
+    ["<C-e>"] = { "hide" },
+    ["<C-y>"] = { "select_and_accept" },
+    ["<C-p>"] = { "select_prev", "fallback" },
+    ["<C-n>"] = { "select_next", "fallback" },
+    ["<C-b>"] = { "scroll_documentation_up", "fallback" },
+    ["<C-f>"] = { "scroll_documentation_down", "fallback" },
+    ["<Tab>"] = { "snippet_forward", "fallback" },
+    ["<S-Tab>"] = { "snippet_backward", "fallback" },
+  },
+
+  completion = {
+    documentation = {
+      auto_show = true,
+      auto_show_delay_ms = 500,
+    },
+    menu = {
+      draw = {
+        columns = { { "label", "label_description", gap = 1 }, { "kind_icon", "kind" }, { "source_name" } },
       },
-      signature = {
-        -- Enable signature help
-        enabled = true,
+    },
+  },
+
+  signature = {
+    enabled = true,
+  },
+
+  sources = {
+    default = { "lsp", "path", "snippets", "buffer" },
+    providers = {
+      lsp = {
+        name = "LSP",
+        module = "blink.cmp.sources.lsp",
+        fallbacks = { "buffer" },
       },
-      -- Default list of enabled providers defined so that you can extend it
-      -- elsewhere in your config, without redefining it, due to `opts_extend`
-      sources = {
-        default = { "lsp", "path", "snippets", "buffer" },
+      path = {
+        name = "Path",
+        module = "blink.cmp.sources.path",
       },
-    })
+      snippets = {
+        name = "Snippets",
+        module = "blink.cmp.sources.snippets",
+      },
+      buffer = {
+        name = "Buffer",
+        module = "blink.cmp.sources.buffer",
+      },
+    },
+  },
+
+  -- Enable for all filetypes
+  enabled = function()
+    return true
   end,
-}
+})

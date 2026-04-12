@@ -1,23 +1,23 @@
-return {
-  "mfussenegger/nvim-lint",
-  event = { "BufReadPre", "BufNewFile" },
-  config = function()
-    local lint = require("lint")
+-- nvim-lint configuration
+-- vim.pack version - no lazy loading
 
-    lint.linters_by_ft = {
-    }
+-- Add the plugin
+vim.pack.add({"https://github.com/mfussenegger/nvim-lint.git"})
 
-    local lint_augroup = vim.api.nvim_create_augroup("lint", { clear = true })
+-- Configure the plugin
+local lint = require("lint")
 
-    vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
-      group = lint_augroup,
-      callback = function()
-        lint.try_lint()
-      end,
-    })
+lint.linters_by_ft = {}
 
-    vim.keymap.set("n", "<leader>cl", function()
+local lint_augroup = vim.api.nvim_create_augroup("lint", { clear = true })
+
+vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
+  group = lint_augroup,
+  callback = function()
     lint.try_lint()
-    end, { desc = "Trigger linting for current file" })
   end,
-}
+})
+
+vim.keymap.set("n", "<leader>cl", function()
+  lint.try_lint()
+end, { desc = "Trigger linting for current file" })
