@@ -2,7 +2,7 @@
 -- vim.pack version - no lazy loading
 
 -- Add the plugin
-vim.pack.add({"https://github.com/catppuccin/nvim.git"})
+vim.pack.add({ { src = "https://github.com/catppuccin/nvim", name = "catppuccin" } })
 
 -- Configure the plugin
 require("catppuccin").setup({
