@@ -22,6 +22,7 @@ require("which-key").setup({
       { "<leader>p", group = "Processes/Tasks" },
       { "<leader>q", group = "quit/session" },
       { "<leader>s", group = "search" },
+      { "<leader>t", group = "test" },
       { "<leader>u", group = "ui", icon = { icon = " ", color = "cyan" } },
       { "<leader>x", group = "diagnostics/quickfix", icon = { icon = " ", color = "green" } },
       { "<leader>X", group = "Xcode" },
