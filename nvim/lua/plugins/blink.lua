@@ -11,7 +11,7 @@ vim.pack.add({
 -- Configure the plugin
 require("blink.cmp").setup({
   fuzzy = {
-    implementation = "prefer_rust_with_warning",
+    implementation = "lua",
   },
 
   -- Keymap configuration
