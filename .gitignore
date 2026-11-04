@@ -4,3 +4,27 @@ raycast/extensions
 github-copilot
 jgit
 .DS_Store
+/gcloud
+/gws
+Brewfile.lock.json
+
+# OpenCode local secrets and runtime state
+/opencode/service.json
+/opencode/opencode-notifier-state.json
+/opencode/package-lock.json
+
+# Herdr app/core: generated home, logs, sockets and runtime state
+/herdr/
+/herdr-app/*
+!/herdr-app/settings.json
+!/herdr-app/keys.json
+!/herdr-app/layouts/
+!/herdr-app/themes/
+
+# Other app/runtime state
+/1Password/
+/.ralph-tui/
+/ralph-tui/
+/openspec/
+/cmux/
+/package-lock.json

@@ -16,6 +16,11 @@ A comprehensive Neovim configuration built on top of [LazyVim](https://github.co
 
 ## 📋 Requirements
 
+> **macOS users:** All Homebrew dependencies are managed in the root [`Brewfile`](../../Brewfile). Run:
+> ```bash
+> brew bundle --file=~/.config/Brewfile
+> ```
+
 ### Essential Dependencies
 
 1. **Neovim >= 0.10.0**

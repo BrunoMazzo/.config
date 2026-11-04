@@ -2,7 +2,7 @@
 -- vim.pack version - no lazy loading
 
 -- Add the plugin
-vim.pack.add({"https://github.com/nvim-lualine/lualine.nvim.git"})
+vim.pack.add({ "https://github.com/nvim-lualine/lualine.nvim.git" })
 
 require("lualine").setup({
   options = {
