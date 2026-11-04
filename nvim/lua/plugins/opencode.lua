@@ -1,6 +1,9 @@
 -- opencode.nvim configuration
--- Integrates the opencode AI assistant with Neovim
+-- Integrates the OpenCode AI assistant with Neovim
 -- https://github.com/nickjvandyke/opencode.nvim
+--
+-- Tracks the plugin's `main` branch, which supports OpenCode v2.
+-- (`vim.version.range("*")` would pin to the v1-compatible stable release.)
 
 -- Add the plugin
 vim.pack.add({ "https://github.com/nickjvandyke/opencode.nvim.git" })
@@ -8,35 +11,15 @@ vim.pack.add({ "https://github.com/nickjvandyke/opencode.nvim.git" })
 -- Configuration
 ---@type opencode.Opts
 vim.g.opencode_opts = {
-  -- Default configuration - check lua/opencode/config.lua for all options
-  -- You can customize here if needed
+  -- Defaults are sensible; see lua/opencode/config.lua in the plugin for all options
 }
 
--- Required for opts.events.reload
-vim.o.autoread = true
-
--- Set up keymaps
--- Ask opencode (Ctrl+a)
+-- Ask OpenCode about the cursor/selection
 vim.keymap.set({ "n", "x" }, "<leader>o", function()
-  require("opencode").ask("@this: ", { submit = true })
-end, { desc = "Ask opencode…" })
+  require("opencode").ask("@this: ")
+end, { desc = "Ask OpenCode…" })
 
--- -- Execute opencode action (Ctrl+x)
--- vim.keymap.set({ "n", "x" }, "<C-x>", function()
---   require("opencode").select()
--- end, { desc = "Execute opencode action…" })
---
--- -- Toggle opencode terminal (Ctrl+.)
--- vim.keymap.set({ "n", "t" }, "<C-.>", function()
---   require("opencode").toggle()
--- end, { desc = "Toggle opencode" })
---
--- -- Operator mode - add range to opencode (go)
--- vim.keymap.set({ "n", "x" }, "go", function()
---   return require("opencode").operator("@this ")
--- end, { desc = "Add range to opencode", expr = true })
---
--- -- Operator mode - add line to opencode (goo)
--- vim.keymap.set("n", "goo", function()
---   return require("opencode").operator("@this ") .. "_"
--- end, { desc = "Add line to opencode", expr = true })
+-- Select a prompt, command, session, or other OpenCode action
+vim.keymap.set({ "n", "x" }, "<leader>os", function()
+  require("opencode").select()
+end, { desc = "Select OpenCode action…" })

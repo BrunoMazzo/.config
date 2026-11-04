@@ -2,10 +2,11 @@
 -- vim.pack version - no lazy loading
 
 -- Add dependency first
-vim.pack.add({"https://github.com/nvim-neotest/nvim-nio.git"})
+vim.pack.add({ "https://github.com/mfussenegger/nvim-dap.git" })
+vim.pack.add({ "https://github.com/nvim-neotest/nvim-nio.git" })
 
 -- Add the main plugin
-vim.pack.add({"https://github.com/rcarriga/nvim-dap-ui.git"})
+vim.pack.add({ "https://github.com/rcarriga/nvim-dap-ui.git" })
 
 -- Configure the plugin
 local dap = require("dap")

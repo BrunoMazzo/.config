@@ -5,13 +5,6 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
--- Bootstrap vim.pack
-local packpath = vim.fn.stdpath("data") .. "/site/pack/packer"
-
--- Ensure the pack directory exists
-vim.fn.mkdir(packpath .. "/start", "p")
-vim.fn.mkdir(packpath .. "/opt", "p")
-
 -- Load core configuration
 require("config.options")
 require("config.keymaps")

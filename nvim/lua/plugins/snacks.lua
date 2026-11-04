@@ -2,7 +2,7 @@
 -- vim.pack version - no lazy loading
 
 -- Add the plugin
-vim.pack.add({"https://github.com/folke/snacks.nvim.git"})
+vim.pack.add({ "https://github.com/folke/snacks.nvim.git" })
 
 -- Configure the plugin
 require("snacks").setup({
@@ -50,8 +50,13 @@ require("snacks").setup({
     enabled = true,
     -- OpenCode integration for enhanced select() functionality
     actions = {
-      opencode_send = function(...)
-        return require("opencode").snacks_picker_send(...)
+      opencode_send = function(picker)
+        local items = vim.tbl_map(function(item)
+          return item.file and require("opencode").format({ path = item.file, from = item.pos, to = item.end_pos })
+            or item.text
+        end, picker:selected({ fallback = true }))
+
+        require("opencode").prompt(table.concat(items, ", ") .. " ")
       end,
     },
     win = {
