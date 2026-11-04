@@ -23,8 +23,6 @@ Brewfile.lock.json
 
 # Other app/runtime state
 /1Password/
-/.ralph-tui/
-/ralph-tui/
 /openspec/
 /cmux/
 /package-lock.json

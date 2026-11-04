@@ -46,7 +46,7 @@ brew "zoxide"            # Smarter cd command (cd with z)
 brew "tree-sitter"       # Syntax parsing for neovim
 
 # --- Utilities ---
-brew "jq"                # JSON processor (used by ralph scripts)
+brew "jq"                # JSON processor
 brew "coreutils"         # GNU core utilities
 
 # --- Fonts ---

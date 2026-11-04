@@ -21,7 +21,6 @@ This installs all formulae and casks required by the configurations in this repo
 | `herdr-app/` | Herdr app settings, keybindings, layouts and themes |
 | `nvim/` | Neovim configuration |
 | `opencode/` | OpenCode AI assistant settings |
-| `ralph/` | Ralph task runner scripts |
 | `sesh/` | Sesh session definitions |
 | `sketchybar/` | macOS status bar |
 | `tmux/` | Terminal multiplexer |
@@ -52,6 +51,6 @@ Then review the changes and commit them.
 ## Local-Only Files
 
 Secrets and runtime state are intentionally untracked (see `.gitignore`), including
-`opencode/service.json`, the OpenCode notifier state, Herdr logs/sockets/telemetry,
-and Ralph loop progress. Herdr's app-managed mods and assets are regenerated on
-launch; only user settings under `herdr-app/` are tracked.
+`opencode/service.json`, the OpenCode notifier state, and Herdr logs/sockets/telemetry.
+Herdr's app-managed mods and assets are regenerated on launch; only user settings
+under `herdr-app/` are tracked.
