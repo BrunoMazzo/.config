@@ -17,6 +17,21 @@ vim.pack.add({
 -- Configure the plugin
 require("neo-tree").setup({
   sources = { "filesystem", "buffers", "git_status" },
+  -- Nest test/spec files under the source file they belong to.
+  -- %1 is the source's base name and %2 its extension, so app.ts owns
+  -- app.test.ts as well as app.integration.test.ts, app.feature.test.ts
+  -- and any other qualified variant.
+  nesting_rules = {
+    tests = {
+      pattern = "^(.+)%.([^.]+)$",
+      files = {
+        "%1.test.%2",
+        "%1.spec.%2",
+        "%1.*.test.%2",
+        "%1.*.spec.%2",
+      },
+    },
+  },
   open_files_do_not_replace_types = { "terminal", "Trouble", "trouble", "qf", "Outline" },
   filesystem = {
     bind_to_cwd = false,
@@ -30,9 +45,10 @@ require("neo-tree").setup({
     position = "right",
     width = 30,
     mappings = {
-      ["l"] = "open",
+      -- A file with nested files expands on `l`; pressing `l` again opens it.
+      ["l"] = { "open", config = { expand_nested_files = true } },
       ["h"] = "close_node",
-      ["<space>"] = "none",
+      ["<space>"] = "toggle_node",
     },
   },
   default_component_configs = {
