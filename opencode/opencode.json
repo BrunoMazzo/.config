@@ -17,6 +17,15 @@
       "type": "remote",
       "enabled": false,
       "url": "https://mcp.buildkite.com/mcp"
+    },
+    "servers": {
+      "xcode": {
+        "type": "local",
+        "command": [
+          "xcrun",
+          "mcpbridge"
+        ]
+      }
     }
   },
   "plugin": ["@mohak34/opencode-notifier@latest"],
