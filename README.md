@@ -18,7 +18,7 @@ This installs all formulae and casks required by the configurations in this repo
 |--------|-------------|
 | `aerospace/` | Window manager (AeroSpace) |
 | `hammerspoon/` | macOS automation (Hex-Neovim integration) |
-| `herdr-app/` | Herdr app settings, keybindings, layouts and themes |
+| `herdr-app/` | Herdr app settings, keybindings, layouts, themes and personal mods |
 | `nvim/` | Neovim configuration |
 | `opencode/` | OpenCode AI assistant settings |
 | `sesh/` | Sesh session definitions |

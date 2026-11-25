@@ -21,6 +21,16 @@ Brewfile.lock.json
 !/herdr-app/layouts/
 !/herdr-app/themes/
 
+# Personal Herdr mods (the app regenerates everything else)
+!/herdr-app/mods/
+/herdr-app/mods/*
+!/herdr-app/mods/spaces-agents/
+/herdr-app/mods/spaces-agents/gpui-kit.d.ts
+/herdr-app/mods/spaces-agents/jsconfig.json
+!/herdr-app/mods/space-menu/
+/herdr-app/mods/space-menu/gpui-kit.d.ts
+/herdr-app/mods/space-menu/jsconfig.json
+
 # Other app/runtime state
 /1Password/
 /openspec/
