@@ -114,7 +114,8 @@ export default class Spaces extends View {
     this.folded = new Set(JSON.parse(localStorage.getItem("machines.folded") ?? "[]"));
     this.foldedProjects = new Set(JSON.parse(localStorage.getItem("projects.folded") ?? "[]"));
     this.agentFolded = new Set(); // agent addresses whose sub-agents are folded away
-    this.hoveredAgent = null; // agent address under the pointer, for the pin control
+    this.pinnedSpaces = new Set(JSON.parse(localStorage.getItem("spaces.pinned") ?? "[]")); // first in their project
+    this.hoveredSpace = null; // space id under the pointer, for the pin control
     this.bySpace = new Map(); // space id -> its agents, in display order
     this.projectBySpace = new Map(); // space id -> its project key
     this.terms = []; // terminals(), read once per render
@@ -329,6 +330,8 @@ export default class Spaces extends View {
       group.rows.push(r);
       if (r.g && !r.g.linked) group.main ??= r;
     }
+    // Pinned workspaces lead their project; the rest keep their order.
+    for (const group of out) group.rows.sort((x, y) => (this.pinnedSpaces.has(y.w.id) ? 1 : 0) - (this.pinnedSpaces.has(x.w.id) ? 1 : 0));
     return out;
   }
 
@@ -509,7 +512,46 @@ export default class Spaces extends View {
       .child(div().flex_none().text_size(10.5).child("main checkout"));
   }
 
-  // Branch and tracking state after a workspace's name.
+  // Branch and tracking state on its own line under a named workspace, lined up
+  // with the name (past the 18px badge and its 9px gap) so it gets the full width.
+  branchLine(g, t) {
+    return h_flex()
+      .min_w(0)
+      .pl(27)
+      .gap(5)
+      .items_center()
+      .text_size(11.5)
+      .text_color(t.dim)
+      .child(div().min_w(0).truncate().child(g.branch ?? "detached"))
+      .when(g.ahead > 0, (el) => el.child(div().flex_none().text_color(t.ansi2).child(`↑${g.ahead}`)))
+      .when(g.behind > 0, (el) => el.child(div().flex_none().text_color(t.ansi1).child(`↓${g.behind}`)));
+  }
+
+  // Pins a workspace to the top of its project (kept in this mod's storage).
+  pinControl(w, pinned, t) {
+    return div()
+      .id(`space-pin-${w.id}`)
+      .size(20)
+      .flex_none()
+      .flex()
+      .items_center()
+      .justify_center()
+      .rounded(5)
+      .text_color(pinned ? t.muted : t.dim)
+      .cursor_pointer()
+      .hover((el) => el.bg(t.hover).text_color(t.foreground))
+      .tooltip(pinned ? "Unpin" : "Pin to the top")
+      .on_mouse_down("left", (_e, cx) => cx.stop_propagation()) // not a drag or a select
+      .on_click((_e, cx) => {
+        cx.stop_propagation();
+        pinned ? this.pinnedSpaces.delete(w.id) : this.pinnedSpaces.add(w.id);
+        localStorage.setItem("spaces.pinned", JSON.stringify([...this.pinnedSpaces]));
+        cx.notify();
+      })
+      .child(svg(`mods/workspace-chrome/${pinned ? "pin-off" : "pin"}.svg`).size(12));
+  }
+
+  // Tracking state after a workspace's name (and the branch, when asked).
   branchTail(g, showBranch, t) {
     const branch = g.branch ?? "detached";
     return h_flex()
@@ -587,22 +629,6 @@ export default class Spaces extends View {
     const open = !this.agentFolded.has(a.address);
     const pic = programIcon(a.program, 14, a.focused ? t.foreground : t.muted);
     const full = [a.title, tab?.named ? tab.name : null].filter(Boolean).join(" · ");
-    const pinControl = (pinned) => div()
-      .id(`pin-${a.address}`)
-      .flex_none()
-      .p(2)
-      .rounded(4)
-      .text_color(t.dim)
-      .cursor_pointer()
-      .hover((el) => el.bg(t.hover).text_color(t.foreground))
-      .tooltip(pinned ? "Unpin" : "Pin to the top")
-      .on_click((_e, cx) => {
-        cx.stop_propagation();
-        run("terminal.pin", { terminal: a.address, pinned: !pinned });
-        this.hoveredAgent = null;
-        cx.notify();
-      })
-      .child(svg(`mods/workspace-chrome/${pinned ? "pin-off" : "pin"}.svg`).size(11));
     return h_flex()
       .id(`agent-${a.address}`)
       .min_h(27)
@@ -617,18 +643,10 @@ export default class Spaces extends View {
       .when(!a.focused, (el) => el.hover((s) => s.bg(t.hover)))
       .cursor_pointer()
       .on_click(() => run("pane.focus", { pane: a.pane }))
-      .on_hover((on, cx) => {
-        const next = on ? a.address : this.hoveredAgent === a.address ? null : this.hoveredAgent;
-        if (next !== this.hoveredAgent) {
-          this.hoveredAgent = next;
-          cx.notify();
-        }
-      })
       .when(Boolean(pic), (el) => el.child(div().w(14).flex_none().child(pic)))
       .child(div().flex_1().min_w(0).line_height(`${TITLE_LINE}px`)
         .max_h(TITLE_LINE * TITLE_LINES).overflow_hidden().whitespace_normal()
         .text_color(a.focused ? t.foreground : t.muted).tooltip(full || title).child(title))
-      .when(a.pinned || this.hoveredAgent === a.address, (el) => el.child(pinControl(a.pinned)))
       .when(subs.length > 0, (el) => el.child(div()
         .id(`agent-fold-${a.address}`)
         .h(16)
@@ -677,12 +695,14 @@ export default class Spaces extends View {
     const primary = w.named ? w.name : (branch || w.name);
     const showBranch = w.named && Boolean(branch);
     const linked = Boolean(g?.linked);
-    const full = [w.name, branch, g?.root].filter(Boolean).join(" · ");
+    const pinned = this.pinnedSpaces.has(w.id);
+    const full =[w.name, branch, g?.root].filter(Boolean).join(" · ");
     return v_flex()
       .relative()
       .id(`space-${w.id}`)
       .px(8)
-      .h(30)
+      .h(showBranch ? 44 : 30)
+      .gap(1)
       .flex_none()
       .justify_center()
       .rounded(8)
@@ -729,6 +749,13 @@ export default class Spaces extends View {
         cx.notify();
       })
       .on_mouse_down("right", () => this.menu(w))
+      .on_hover((over, cx) => {
+        const next = over ? w.id : this.hoveredSpace === w.id ? null : this.hoveredSpace;
+        if (next !== this.hoveredSpace) {
+          this.hoveredSpace = next;
+          cx.notify();
+        }
+      })
       .child(
         h_flex()
           .gap(9)
@@ -736,8 +763,9 @@ export default class Spaces extends View {
           .when(linked, el => el.child(h_flex().size(18).flex_none().items_center().justify_center().child(svg("mods/workspace-chrome/branch.svg").size(13).flex_none().text_color(t.muted))))
           .when(!linked, el => el.child(h_flex().size(18).flex_none().rounded(5).bg(fill).items_center().justify_center().text_size(10.5).font_bold().text_color("#ffffff").child([...w.name][0]?.toUpperCase() ?? "?")))
           .child(div().flex_1().min_w(0).truncate().font_medium().text_color(t.foreground).tooltip(full || w.name).child(primary))
-          .when(Boolean(g) && (showBranch || g.ahead > 0 || g.behind > 0), el => el.child(this.branchTail(g, showBranch, t)))
+          .when(Boolean(g) && !showBranch && (g.ahead > 0 || g.behind > 0), el => el.child(this.branchTail(g, false, t)))
           .when(Boolean(w.status), el => el.child(this.status(t, { status: w.status }, true)))
+          .when(pinned || this.hoveredSpace === w.id, el => el.child(this.pinControl(w, pinned, t)))
           .child(div()
             .id(`space-menu-${w.id}`)
             .size(20)
@@ -752,7 +780,8 @@ export default class Spaces extends View {
             .tooltip("Workspace actions")
             .on_click((_e, cx) => { cx.stop_propagation(); this.menu(w); })
             .child(svg("mods/spaces-agents/more.svg").size(13))),
-      );
+      )
+      .when(showBranch, el => el.child(this.branchLine(g, t)));
   }
 
   compact({ w, i }, t) {
@@ -796,6 +825,11 @@ export default class Spaces extends View {
     }
     for (const list of this.bySpace.values()) list.sort((x, y) => (y.pinned ? 1 : 0) - (x.pinned ? 1 : 0));
     const ids = new Set(sp.map(p => p.id));
+    // Forget pins of closed workspaces, once every machine's spaces are in.
+    if (machines().every(m => m.layout === "ready") && [...this.pinnedSpaces].some(id => !ids.has(id))) {
+      this.pinnedSpaces = new Set([...this.pinnedSpaces].filter(id => ids.has(id)));
+      localStorage.setItem("spaces.pinned", JSON.stringify([...this.pinnedSpaces]));
+    }
     const kept = Object.fromEntries(Object.entries(shared("space.colors") ?? {}).filter(([id]) => ids.has(id)));
     let changed = Object.keys(kept).length !== Object.keys(shared("space.colors") ?? {}).length;
     for (const p of sp) {
